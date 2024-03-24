@@ -1,0 +1,538 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefault{c+cm}{/*}
+\PYGdefault{c+cm}{ * Trabalho de Projeto e Análise de Algoritmo}
+\PYGdefault{c+cm}{ * Período 16.1}
+\PYGdefault{c+cm}{ *}
+\PYGdefault{c+cm}{ * Desenvolver Metaheurísticas para o Problema de Alocação Generalizada}
+\PYGdefault{c+cm}{ *}
+\PYGdefault{c+cm}{ * Algoritmo: Genético.}
+\PYGdefault{c+cm}{ * Data: 01/08/2016.}
+\PYGdefault{c+cm}{ * Distribuição Livre, desde que referenciando o autor.}
+\PYGdefault{c+cm}{ *}
+\PYGdefault{c+cm}{ * Professor: Haroldo Santos}
+\PYGdefault{c+cm}{ *}
+\PYGdefault{c+cm}{ * Autor do Trabalho: Rodolfo Labiapari Mansur Guimarães}
+\PYGdefault{c+cm}{ */}
+
+\PYGdefault{c+cp}{\PYGdefaultZsh{}include} \PYGdefault{c+cpf}{\PYGdefaultZlt{}stdio.h\PYGdefaultZgt{}}
+\PYGdefault{c+cp}{\PYGdefaultZsh{}include} \PYGdefault{c+cpf}{\PYGdefaultZlt{}stdlib.h\PYGdefaultZgt{}}
+\PYGdefault{c+cp}{\PYGdefaultZsh{}include} \PYGdefault{c+cpf}{\PYGdefaultZlt{}time.h\PYGdefaultZgt{}}
+\PYGdefault{c+cp}{\PYGdefaultZsh{}include} \PYGdefault{c+cpf}{\PYGdefaultZdq{}gap.h\PYGdefaultZdq{}}
+
+
+
+\PYGdefault{c+cm}{/*}
+\PYGdefault{c+cm}{ * Procedimento que realiza a alocação de memória para novas instâncias.}
+\PYGdefault{c+cm}{ *}
+\PYGdefault{c+cm}{ * O procedimento instancia a população, mas não os indivíduos.}
+\PYGdefault{c+cm}{ */}
+\PYGdefault{k+kt}{void} \PYGdefault{n+nf}{Instancia\PYGdefaultZus{}Populacoes}\PYGdefault{p}{(}\PYGdefault{n}{Solucao} \PYGdefault{o}{***} \PYGdefault{n}{pop}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+	\PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{pop}\PYGdefault{p}{)} \PYGdefault{o}{=} \PYGdefault{n}{calloc}\PYGdefault{p}{(}\PYGdefault{n}{TAM\PYGdefaultZus{}POP}\PYGdefault{p}{,} \PYGdefault{k}{sizeof} \PYGdefault{p}{(}\PYGdefault{n}{Solucao}\PYGdefault{o}{*}\PYGdefault{p}{));}
+\PYGdefault{p}{\PYGdefaultZcb{}}
+
+
+
+\PYGdefault{c+cm}{/*}
+\PYGdefault{c+cm}{ * Procedimento que imprime os dados de toda a população.}
+\PYGdefault{c+cm}{ */}
+\PYGdefault{k+kt}{void} \PYGdefault{n+nf}{Imprime\PYGdefaultZus{}Populacao} \PYGdefault{p}{(}\PYGdefault{n}{Solucao} \PYGdefault{o}{**} \PYGdefault{n}{p}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+	\PYGdefault{k+kt}{int} \PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{,} \PYGdefault{n}{j} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+	\PYGdefault{k}{if} \PYGdefault{p}{(}\PYGdefault{n}{IMPRIMIR}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+
+		\PYGdefault{n}{printf}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{l+s+se}{\PYGdefaultZbs{}n\PYGdefaultZbs{}n}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{p}{);}
+
+		\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;} \PYGdefault{n}{i} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{TAM\PYGdefaultZus{}POP}\PYGdefault{p}{;} \PYGdefault{n}{i}\PYGdefault{o}{++}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+			\PYGdefault{n}{printf}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}[\PYGdefaultZpc{}3d] \PYGdefaultZhy{} \PYGdefaultZdq{}}\PYGdefault{p}{,} \PYGdefault{n}{i}\PYGdefault{p}{);}
+			\PYGdefault{k}{if} \PYGdefault{p}{(}\PYGdefault{n}{p}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]} \PYGdefault{o}{!=} \PYGdefault{n+nb}{NULL}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+				\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{j} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;} \PYGdefault{n}{j} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{QUANT\PYGdefaultZus{}TAREFAS}\PYGdefault{p}{;} \PYGdefault{n}{j}\PYGdefault{o}{++}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+					\PYGdefault{n}{printf}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}\PYGdefaultZpc{}1d  \PYGdefaultZdq{}}\PYGdefault{p}{,} \PYGdefault{n}{p}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}\PYGdefault{p}{[}\PYGdefault{n}{j}\PYGdefault{p}{]);}
+				\PYGdefault{p}{\PYGdefaultZcb{}}
+
+				\PYGdefault{n}{printf}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{l+s+se}{\PYGdefaultZbs{}t}\PYGdefault{l+s}{\PYGdefaultZpc{}10.1lf}\PYGdefault{l+s+se}{\PYGdefaultZbs{}n}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{p}{,} \PYGdefault{n}{p}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{avaliacao}\PYGdefault{p}{);}
+			\PYGdefault{p}{\PYGdefaultZcb{}} \PYGdefault{k}{else}
+				\PYGdefault{n}{printf}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{l+s+se}{\PYGdefaultZbs{}n}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{p}{);}
+
+			\PYGdefault{n}{fflush}\PYGdefault{p}{(}\PYGdefault{n}{stdout}\PYGdefault{p}{);}
+		\PYGdefault{p}{\PYGdefaultZcb{}}
+
+		\PYGdefault{n}{fprintf}\PYGdefault{p}{(}\PYGdefault{n}{out}\PYGdefault{p}{,} \PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{l+s+se}{\PYGdefaultZbs{}n\PYGdefaultZbs{}n}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{p}{);}
+
+		\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;} \PYGdefault{n}{i} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{TAM\PYGdefaultZus{}POP}\PYGdefault{p}{;} \PYGdefault{n}{i}\PYGdefault{o}{++}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+			\PYGdefault{n}{fprintf}\PYGdefault{p}{(}\PYGdefault{n}{out}\PYGdefault{p}{,} \PYGdefault{l+s}{\PYGdefaultZdq{}[\PYGdefaultZpc{}3d] \PYGdefaultZhy{} \PYGdefaultZdq{}}\PYGdefault{p}{,} \PYGdefault{n}{i}\PYGdefault{p}{);}
+			\PYGdefault{k}{if} \PYGdefault{p}{(}\PYGdefault{n}{p}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]} \PYGdefault{o}{!=} \PYGdefault{n+nb}{NULL}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+				\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{j} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;} \PYGdefault{n}{j} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{QUANT\PYGdefaultZus{}TAREFAS}\PYGdefault{p}{;} \PYGdefault{n}{j}\PYGdefault{o}{++}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+					\PYGdefault{n}{fprintf}\PYGdefault{p}{(}\PYGdefault{n}{out}\PYGdefault{p}{,} \PYGdefault{l+s}{\PYGdefaultZdq{}\PYGdefaultZpc{}1d  \PYGdefaultZdq{}}\PYGdefault{p}{,} \PYGdefault{n}{p}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}\PYGdefault{p}{[}\PYGdefault{n}{j}\PYGdefault{p}{]);}
+				\PYGdefault{p}{\PYGdefaultZcb{}}
+
+				\PYGdefault{n}{fprintf}\PYGdefault{p}{(}\PYGdefault{n}{out}\PYGdefault{p}{,} \PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{l+s+se}{\PYGdefaultZbs{}t}\PYGdefault{l+s}{\PYGdefaultZpc{}10.1lf}\PYGdefault{l+s+se}{\PYGdefaultZbs{}n}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{p}{,} \PYGdefault{n}{p}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{avaliacao}\PYGdefault{p}{);}
+			\PYGdefault{p}{\PYGdefaultZcb{}} \PYGdefault{k}{else}
+				\PYGdefault{n}{fprintf}\PYGdefault{p}{(}\PYGdefault{n}{out}\PYGdefault{p}{,} \PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{l+s+se}{\PYGdefaultZbs{}n}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{p}{);}
+
+			\PYGdefault{n}{fflush}\PYGdefault{p}{(}\PYGdefault{n}{out}\PYGdefault{p}{);}
+		\PYGdefault{p}{\PYGdefaultZcb{}}
+	\PYGdefault{p}{\PYGdefaultZcb{}}
+\PYGdefault{p}{\PYGdefaultZcb{}}
+
+
+
+\PYGdefault{c+cm}{/*}
+\PYGdefault{c+cm}{ * Procedimento que imprime de forma inteligente, quais índices da população}
+\PYGdefault{c+cm}{ *	estão preenchidos e quais estão vazios.}
+\PYGdefault{c+cm}{ */}
+\PYGdefault{k+kt}{void} \PYGdefault{n+nf}{Imprime\PYGdefaultZus{}Dados\PYGdefaultZus{}Populacao} \PYGdefault{p}{(}\PYGdefault{n}{Solucao} \PYGdefault{o}{**} \PYGdefault{n}{p}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+	\PYGdefault{k+kt}{int} \PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+
+	\PYGdefault{n}{printf}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{l+s+se}{\PYGdefaultZbs{}n\PYGdefaultZbs{}n}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{p}{);}
+
+	\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;} \PYGdefault{n}{i} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{TAM\PYGdefaultZus{}POP}\PYGdefault{p}{;} \PYGdefault{n}{i}\PYGdefault{o}{++}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+		\PYGdefault{n}{printf}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}[\PYGdefaultZpc{}5d] \PYGdefaultZdq{}}\PYGdefault{p}{,} \PYGdefault{n}{i}\PYGdefault{p}{);}
+		\PYGdefault{n}{printf}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}c\PYGdefaultZpc{}5.0lf / sum = a\PYGdefaultZpc{}12.6lf\PYGdefaultZdq{}}\PYGdefault{p}{,} \PYGdefault{n}{p}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{custo}\PYGdefault{p}{,} \PYGdefault{n}{p}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{avaliacao}\PYGdefault{p}{);}
+
+		\PYGdefault{k}{if} \PYGdefault{p}{(}\PYGdefault{n}{p}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{custo} \PYGdefault{o}{\PYGdefaultZgt{}} \PYGdefault{l+m+mi}{5} \PYGdefault{o}{*} \PYGdefault{l+m+mi}{209}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+			\PYGdefault{n}{printf}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{} X}\PYGdefault{l+s+se}{\PYGdefaultZbs{}n}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{p}{);}
+		\PYGdefault{p}{\PYGdefaultZcb{}} \PYGdefault{k}{else} \PYGdefault{p}{\PYGdefaultZob{}}
+			\PYGdefault{n}{printf}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{l+s+se}{\PYGdefaultZbs{}n}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{p}{);}
+		\PYGdefault{p}{\PYGdefaultZcb{}}
+	\PYGdefault{p}{\PYGdefaultZcb{}}
+\PYGdefault{p}{\PYGdefaultZcb{}}
+
+
+
+\PYGdefault{c+cm}{/*}
+\PYGdefault{c+cm}{ * Procedimento que realiza a leitura dos parâmetros de configuração do}
+\PYGdefault{c+cm}{ *	algoritmo.}
+\PYGdefault{c+cm}{ */}
+\PYGdefault{k+kt}{void} \PYGdefault{n+nf}{Le\PYGdefaultZus{}Parametros}\PYGdefault{p}{(}\PYGdefault{k+kt}{char} \PYGdefault{o}{*} \PYGdefault{n}{conf}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+	\PYGdefault{k+kt}{FILE} \PYGdefault{o}{*} \PYGdefault{n}{f} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+
+	\PYGdefault{n}{f} \PYGdefault{o}{=} \PYGdefault{n}{fopen}\PYGdefault{p}{(}\PYGdefault{n}{conf}\PYGdefault{p}{,} \PYGdefault{l+s}{\PYGdefaultZdq{}r\PYGdefaultZdq{}}\PYGdefault{p}{);}
+
+	\PYGdefault{k}{if} \PYGdefault{p}{(}\PYGdefault{n}{f}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+		\PYGdefault{n}{fscanf}\PYGdefault{p}{(}\PYGdefault{n}{f}\PYGdefault{p}{,} \PYGdefault{l+s}{\PYGdefaultZdq{}\PYGdefaultZpc{}d\PYGdefaultZdq{}}\PYGdefault{p}{,} \PYGdefault{o}{\PYGdefaultZam{}}\PYGdefault{n}{TAM\PYGdefaultZus{}POP}\PYGdefault{p}{);}
+		\PYGdefault{n}{fscanf}\PYGdefault{p}{(}\PYGdefault{n}{f}\PYGdefault{p}{,} \PYGdefault{l+s}{\PYGdefaultZdq{}\PYGdefaultZpc{}f\PYGdefaultZdq{}}\PYGdefault{p}{,} \PYGdefault{o}{\PYGdefaultZam{}}\PYGdefault{n}{TAX\PYGdefaultZus{}CRUZAM}\PYGdefault{p}{);}
+		\PYGdefault{n}{fscanf}\PYGdefault{p}{(}\PYGdefault{n}{f}\PYGdefault{p}{,} \PYGdefault{l+s}{\PYGdefaultZdq{}\PYGdefaultZpc{}f\PYGdefaultZdq{}}\PYGdefault{p}{,} \PYGdefault{o}{\PYGdefaultZam{}}\PYGdefault{n}{TAX\PYGdefaultZus{}MUT}\PYGdefault{p}{);}
+		\PYGdefault{n}{fscanf}\PYGdefault{p}{(}\PYGdefault{n}{f}\PYGdefault{p}{,} \PYGdefault{l+s}{\PYGdefaultZdq{}\PYGdefaultZpc{}d\PYGdefaultZdq{}}\PYGdefault{p}{,} \PYGdefault{o}{\PYGdefaultZam{}}\PYGdefault{n}{SECONDS}\PYGdefault{p}{);}
+
+		\PYGdefault{n}{fclose}\PYGdefault{p}{(}\PYGdefault{n}{f}\PYGdefault{p}{);}
+
+	\PYGdefault{p}{\PYGdefaultZcb{}} \PYGdefault{k}{else} \PYGdefault{p}{\PYGdefaultZob{}}
+		\PYGdefault{n}{printf}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}Erro ao ler Configuração!}\PYGdefault{l+s+se}{\PYGdefaultZbs{}n}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{p}{);}
+		\PYGdefault{n}{exit}\PYGdefault{p}{(}\PYGdefault{o}{\PYGdefaultZhy{}}\PYGdefault{l+m+mi}{1}\PYGdefault{p}{);}
+	\PYGdefault{p}{\PYGdefaultZcb{}}
+\PYGdefault{p}{\PYGdefaultZcb{}}
+
+
+
+\PYGdefault{c+cm}{/*}
+\PYGdefault{c+cm}{ * Procedimento que seleciona indivíduos não repetidos aleatoriamente da}
+\PYGdefault{c+cm}{ *	população anterior adicionando\PYGdefaultZhy{}os na nova e eliminando os indivíduos}
+\PYGdefault{c+cm}{ *	rejeitados.}
+\PYGdefault{c+cm}{ */}
+\PYGdefault{k+kt}{void} \PYGdefault{n+nf}{Seleciona\PYGdefaultZus{}Nova\PYGdefaultZus{}Geracao}\PYGdefault{p}{(}\PYGdefault{n}{Solucao} \PYGdefault{o}{***} \PYGdefault{n}{atual}\PYGdefault{p}{,} \PYGdefault{n}{Solucao} \PYGdefault{o}{***} \PYGdefault{n}{proxima}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+	\PYGdefault{k+kt}{int} \PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{,} \PYGdefault{n}{buffer}\PYGdefault{p}{[}\PYGdefault{n}{TAM\PYGdefaultZus{}POP}\PYGdefault{p}{],} \PYGdefault{n}{indice} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+	\PYGdefault{n}{Solucao} \PYGdefault{o}{**} \PYGdefault{n}{ind\PYGdefaultZus{}buffer} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+
+	\PYGdefault{c+c1}{// Inicializa o buffer de usados como \PYGdefaultZsq{}nenhum item utilizado\PYGdefaultZsq{}}
+	\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;} \PYGdefault{n}{i} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{TAM\PYGdefaultZus{}POP}\PYGdefault{p}{;} \PYGdefault{n}{i}\PYGdefault{o}{++}\PYGdefault{p}{)}
+		\PYGdefault{n}{buffer}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+
+	\PYGdefault{c+c1}{// Para cada vagas da próxima população ainda não preenchida}
+	\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{p}{(}\PYGdefault{k+kt}{int}\PYGdefault{p}{)} \PYGdefault{n}{TAM\PYGdefaultZus{}POP} \PYGdefault{o}{*} \PYGdefault{n}{TAX\PYGdefaultZus{}CRUZAM} \PYGdefault{o}{+} \PYGdefault{l+m+mi}{1}\PYGdefault{p}{;} \PYGdefault{n}{i} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{TAM\PYGdefaultZus{}POP}\PYGdefault{p}{;} \PYGdefault{n}{i}\PYGdefault{o}{++}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+
+		\PYGdefault{c+c1}{// Escolhe um indivíduos da antiga população que ainda não foram}
+			\PYGdefault{c+c1}{// escolhidos (a fim de não gerar uma população com indivíduos}
+			\PYGdefault{c+c1}{// idênticos.}
+		\PYGdefault{k}{do} \PYGdefault{p}{\PYGdefaultZob{}}
+			\PYGdefault{n}{indice} \PYGdefault{o}{=} \PYGdefault{n}{random}\PYGdefault{p}{()} \PYGdefault{o}{\PYGdefaultZpc{}} \PYGdefault{n}{TAM\PYGdefaultZus{}POP}\PYGdefault{p}{;}
+		\PYGdefault{p}{\PYGdefaultZcb{}} \PYGdefault{k}{while} \PYGdefault{p}{(}\PYGdefault{n}{buffer}\PYGdefault{p}{[}\PYGdefault{n}{indice}\PYGdefault{p}{]} \PYGdefault{o}{==} \PYGdefault{l+m+mi}{1}\PYGdefault{p}{);}
+
+		\PYGdefault{c+c1}{// Define\PYGdefaultZhy{}o como utilizado.}
+		\PYGdefault{n}{buffer}\PYGdefault{p}{[}\PYGdefault{n}{indice}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{1}\PYGdefault{p}{;}
+		\PYGdefault{c+c1}{// Referencia\PYGdefaultZhy{}o na nova população.}
+		\PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{proxima}\PYGdefault{p}{)[}\PYGdefault{n}{i}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{atual}\PYGdefault{p}{)[}\PYGdefault{n}{indice}\PYGdefault{p}{];}
+	\PYGdefault{p}{\PYGdefaultZcb{}}
+
+	\PYGdefault{c+c1}{// Assim, alguns indivíduos não serão referenciados e por isso devem ser}
+		\PYGdefault{c+c1}{// eliminados}
+	\PYGdefault{c+c1}{// Para cada item da população antiga}
+	\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;} \PYGdefault{n}{i} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{TAM\PYGdefaultZus{}POP}\PYGdefault{p}{;} \PYGdefault{n}{i}\PYGdefault{o}{++}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+		\PYGdefault{c+c1}{// Verifica se o item não foi escolhido.}
+		\PYGdefault{k}{if} \PYGdefault{p}{(}\PYGdefault{n}{buffer}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]} \PYGdefault{o}{==} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+			\PYGdefault{c+c1}{// Se sim, elimina\PYGdefaultZhy{}o}
+			\PYGdefault{n}{free}\PYGdefault{p}{((}\PYGdefault{o}{*}\PYGdefault{n}{atual}\PYGdefault{p}{)[}\PYGdefault{n}{i}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}\PYGdefault{p}{);}
+			\PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{atual}\PYGdefault{p}{)[}\PYGdefault{n}{i}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+			\PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{atual}\PYGdefault{p}{)[}\PYGdefault{n}{i}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{avaliacao} \PYGdefault{o}{=} \PYGdefault{o}{\PYGdefaultZhy{}}\PYGdefault{l+m+mi}{1}\PYGdefault{p}{;}
+		\PYGdefault{p}{\PYGdefaultZcb{}}
+
+		\PYGdefault{c+c1}{// Reseta a população antiga para se tornar um \PYGdefaultZsq{}proxima população\PYGdefaultZsq{}}
+		\PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{atual}\PYGdefault{p}{)[}\PYGdefault{n}{i}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{n+nb}{NULL}\PYGdefault{p}{;}
+	\PYGdefault{p}{\PYGdefaultZcb{}}
+
+	\PYGdefault{c+c1}{// Comuta as populações.}
+	\PYGdefault{n}{ind\PYGdefaultZus{}buffer} \PYGdefault{o}{=} \PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{atual}\PYGdefault{p}{);}
+	\PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{atual}\PYGdefault{p}{)} \PYGdefault{o}{=} \PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{proxima}\PYGdefault{p}{);}
+	\PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{proxima}\PYGdefault{p}{)} \PYGdefault{o}{=} \PYGdefault{n}{ind\PYGdefaultZus{}buffer}\PYGdefault{p}{;}
+\PYGdefault{p}{\PYGdefaultZcb{}}
+
+
+
+\PYGdefault{c+cm}{/*}
+\PYGdefault{c+cm}{ * Procedimento que copia os dados de um indivíduo para outro.}
+\PYGdefault{c+cm}{ */}
+\PYGdefault{k+kt}{void} \PYGdefault{n+nf}{Copia\PYGdefaultZus{}Melhor\PYGdefaultZus{}Solucao}\PYGdefault{p}{(}\PYGdefault{n}{Solucao} \PYGdefault{o}{**} \PYGdefault{n}{p}\PYGdefault{p}{,} \PYGdefault{n}{Solucao} \PYGdefault{o}{**} \PYGdefault{n}{best}\PYGdefault{p}{)\PYGdefaultZob{}}
+	\PYGdefault{k+kt}{int} \PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+	\PYGdefault{n}{Solucao} \PYGdefault{o}{*} \PYGdefault{n}{best\PYGdefaultZus{}pop\PYGdefaultZus{}local} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+
+	\PYGdefault{c+c1}{// Inicia\PYGdefaultZhy{}se definido que o melhor é o primeiro indivíduo.}
+	\PYGdefault{n}{best\PYGdefaultZus{}pop\PYGdefaultZus{}local} \PYGdefault{o}{=} \PYGdefault{n}{p}\PYGdefault{p}{[}\PYGdefault{l+m+mi}{0}\PYGdefault{p}{];}
+
+	\PYGdefault{c+c1}{// Compara\PYGdefaultZhy{}se o primeiro com os outros de forma a escolher o melhor}
+		\PYGdefault{c+c1}{// indivíduo de toda a população}
+	\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{1}\PYGdefault{p}{;} \PYGdefault{n}{i} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{TAM\PYGdefaultZus{}POP}\PYGdefault{p}{;} \PYGdefault{n}{i}\PYGdefault{o}{++}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+		\PYGdefault{k}{if} \PYGdefault{p}{(}\PYGdefault{n}{p}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{avaliacao} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{best\PYGdefaultZus{}pop\PYGdefaultZus{}local}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{avaliacao}\PYGdefault{p}{)}
+			\PYGdefault{n}{best\PYGdefaultZus{}pop\PYGdefaultZus{}local} \PYGdefault{o}{=} \PYGdefault{n}{p}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{];}
+	\PYGdefault{p}{\PYGdefaultZcb{}}
+
+	\PYGdefault{c+c1}{// Se o indivíduo best ainda não foi criado, cria\PYGdefaultZhy{}o}
+	\PYGdefault{k}{if} \PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{best} \PYGdefault{o}{==} \PYGdefault{n+nb}{NULL}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+		\PYGdefault{c+c1}{// Cria indivíduo}
+		\PYGdefault{o}{*}\PYGdefault{n}{best} \PYGdefault{o}{=} \PYGdefault{n}{calloc} \PYGdefault{p}{(}\PYGdefault{l+m+mi}{1}\PYGdefault{p}{,} \PYGdefault{k}{sizeof}\PYGdefault{p}{(}\PYGdefault{n}{Solucao}\PYGdefault{p}{));}
+		\PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{best}\PYGdefault{p}{)}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas} \PYGdefault{o}{=} \PYGdefault{n}{calloc}\PYGdefault{p}{(}\PYGdefault{n}{QUANT\PYGdefaultZus{}TAREFAS}\PYGdefault{p}{,} \PYGdefault{k}{sizeof}\PYGdefault{p}{(}\PYGdefault{k+kt}{int}\PYGdefault{p}{));}
+		\PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{best}\PYGdefault{p}{)}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{excesso} \PYGdefault{o}{=} \PYGdefault{n}{calloc}\PYGdefault{p}{(}\PYGdefault{n}{QUANT\PYGdefaultZus{}AGENTES}\PYGdefault{p}{,} \PYGdefault{k}{sizeof}\PYGdefault{p}{(}\PYGdefault{k+kt}{int}\PYGdefault{p}{));}
+
+		\PYGdefault{c+c1}{// Copia do melhor encontrado}
+		\PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{best}\PYGdefault{p}{)}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{avaliacao} \PYGdefault{o}{=} \PYGdefault{n}{best\PYGdefaultZus{}pop\PYGdefaultZus{}local}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{avaliacao}\PYGdefault{p}{;}
+		\PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{best}\PYGdefault{p}{)}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{custo} \PYGdefault{o}{=} \PYGdefault{n}{best\PYGdefaultZus{}pop\PYGdefaultZus{}local}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{custo}\PYGdefault{p}{;}
+
+		\PYGdefault{c+c1}{// Copia os dados \PYGdefaultZsq{}tarefa\PYGdefaultZsq{} e \PYGdefaultZsq{}excesso\PYGdefaultZsq{}}
+		\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;} \PYGdefault{n}{i} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{QUANT\PYGdefaultZus{}TAREFAS}\PYGdefault{p}{;} \PYGdefault{n}{i}\PYGdefault{o}{++}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+			\PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{best}\PYGdefault{p}{)}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{n}{best\PYGdefaultZus{}pop\PYGdefaultZus{}local}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{];}
+			\PYGdefault{k}{if} \PYGdefault{p}{(}\PYGdefault{n}{i} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{QUANT\PYGdefaultZus{}AGENTES}\PYGdefault{p}{)}
+				\PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{best}\PYGdefault{p}{)}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{excesso}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{n}{best\PYGdefaultZus{}pop\PYGdefaultZus{}local}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{excesso}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{];}
+		\PYGdefault{p}{\PYGdefaultZcb{}}
+
+	\PYGdefault{p}{\PYGdefaultZcb{}} \PYGdefault{k}{else} \PYGdefault{p}{\PYGdefaultZob{}}
+		\PYGdefault{c+c1}{// verifica se o melhor encontrado é melhor que o indivíduo atual}
+		\PYGdefault{k}{if} \PYGdefault{p}{((}\PYGdefault{o}{*}\PYGdefault{n}{best}\PYGdefault{p}{)}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{avaliacao} \PYGdefault{o}{\PYGdefaultZgt{}} \PYGdefault{l+m+mi}{2} \PYGdefault{o}{*} \PYGdefault{l+m+mi}{1000000} \PYGdefault{o}{||}
+				\PYGdefault{p}{((}\PYGdefault{n}{best\PYGdefaultZus{}pop\PYGdefaultZus{}local}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{avaliacao} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{l+m+mi}{2} \PYGdefault{o}{*} \PYGdefault{l+m+mi}{1000000}\PYGdefault{p}{)} \PYGdefault{o}{\PYGdefaultZam{}\PYGdefaultZam{}}
+				\PYGdefault{p}{(}\PYGdefault{n}{best\PYGdefaultZus{}pop\PYGdefaultZus{}local}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{custo} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{best}\PYGdefault{p}{)}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{custo}\PYGdefault{p}{)))} \PYGdefault{p}{\PYGdefaultZob{}}
+
+			\PYGdefault{c+c1}{// Copia os dados \PYGdefaultZsq{}tarefa\PYGdefaultZsq{} e \PYGdefaultZsq{}excesso\PYGdefaultZsq{}//}
+			\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;} \PYGdefault{n}{i} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{QUANT\PYGdefaultZus{}TAREFAS}\PYGdefault{p}{;} \PYGdefault{n}{i}\PYGdefault{o}{++}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+				\PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{best}\PYGdefault{p}{)}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{n}{best\PYGdefaultZus{}pop\PYGdefaultZus{}local}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{];}
+				\PYGdefault{k}{if} \PYGdefault{p}{(}\PYGdefault{n}{i} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{QUANT\PYGdefaultZus{}AGENTES}\PYGdefault{p}{)}
+					\PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{best}\PYGdefault{p}{)}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{excesso}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{n}{best\PYGdefaultZus{}pop\PYGdefaultZus{}local}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{excesso}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{];}
+			\PYGdefault{p}{\PYGdefaultZcb{}}
+
+			\PYGdefault{c+c1}{// Copia do melhor indivíduo}
+			\PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{best}\PYGdefault{p}{)}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{avaliacao} \PYGdefault{o}{=} \PYGdefault{n}{best\PYGdefaultZus{}pop\PYGdefaultZus{}local}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{avaliacao}\PYGdefault{p}{;}
+			\PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{best}\PYGdefault{p}{)}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{custo}      \PYGdefault{o}{=} \PYGdefault{n}{best\PYGdefaultZus{}pop\PYGdefaultZus{}local}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{custo}\PYGdefault{p}{;}
+		\PYGdefault{p}{\PYGdefaultZcb{}}
+	\PYGdefault{p}{\PYGdefaultZcb{}}
+\PYGdefault{p}{\PYGdefaultZcb{}}
+
+
+
+\PYGdefault{c+cm}{/*}
+\PYGdefault{c+cm}{ * Procedimento que recombina dois indivíduos gerando um terceiro por meio de}
+\PYGdefault{c+cm}{ *	recombinação uniforme.}
+\PYGdefault{c+cm}{ */}
+\PYGdefault{k+kt}{int} \PYGdefault{o}{*} \PYGdefault{n+nf}{Recombina}\PYGdefault{p}{(}\PYGdefault{n}{Solucao} \PYGdefault{o}{*} \PYGdefault{n}{i1}\PYGdefault{p}{,} \PYGdefault{n}{Solucao} \PYGdefault{o}{*} \PYGdefault{n}{i2}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+	\PYGdefault{k+kt}{int} \PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{,} \PYGdefault{o}{*} \PYGdefault{n}{tarefas} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+
+	\PYGdefault{c+c1}{// Cria um novo vetor de tarefas}
+	\PYGdefault{n}{tarefas} \PYGdefault{o}{=} \PYGdefault{n}{calloc}\PYGdefault{p}{(}\PYGdefault{n}{QUANT\PYGdefaultZus{}TAREFAS}\PYGdefault{p}{,} \PYGdefault{k}{sizeof}\PYGdefault{p}{(}\PYGdefault{k+kt}{int}\PYGdefault{p}{));}
+
+	\PYGdefault{c+c1}{// Recombina de forma uniforme}
+	\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;} \PYGdefault{n}{i} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{QUANT\PYGdefaultZus{}TAREFAS}\PYGdefault{p}{;} \PYGdefault{n}{i}\PYGdefault{o}{++}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+
+		\PYGdefault{c+c1}{// Escolhe de forma uniforme sobre dois indivíduos}
+		\PYGdefault{k}{if} \PYGdefault{p}{(}\PYGdefault{n}{random}\PYGdefault{p}{()} \PYGdefault{o}{\PYGdefaultZpc{}} \PYGdefault{l+m+mi}{2}\PYGdefault{p}{)}
+			\PYGdefault{n}{tarefas}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{n}{i1}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{];}
+		\PYGdefault{k}{else}
+			\PYGdefault{n}{tarefas}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{n}{i2}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{];}
+
+	\PYGdefault{p}{\PYGdefaultZcb{}}
+
+	\PYGdefault{k}{return} \PYGdefault{n}{tarefas}\PYGdefault{p}{;}
+\PYGdefault{p}{\PYGdefaultZcb{}}
+
+
+
+\PYGdefault{c+cm}{/*}
+\PYGdefault{c+cm}{ * Procedimento que cria vários indivíduos aleatórios preenchendo a população.}
+\PYGdefault{c+cm}{ *	Além disso, é realizado a avaliação de cada um destes.}
+\PYGdefault{c+cm}{ */}
+\PYGdefault{k+kt}{void} \PYGdefault{n+nf}{Cria\PYGdefaultZus{}Nova\PYGdefaultZus{}Populacao}\PYGdefault{p}{(}\PYGdefault{n}{Solucao} \PYGdefault{o}{***} \PYGdefault{n}{P}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+	\PYGdefault{k+kt}{int} \PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{,} \PYGdefault{n}{j} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{,} \PYGdefault{n}{k} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{,} \PYGdefault{n}{menor} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+	\PYGdefault{n}{Solucao} \PYGdefault{o}{**} \PYGdefault{n}{p\PYGdefaultZus{}local} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+
+	\PYGdefault{n}{p\PYGdefaultZus{}local} \PYGdefault{o}{=} \PYGdefault{o}{*}\PYGdefault{n}{P}\PYGdefault{p}{;}
+
+	\PYGdefault{c+c1}{// Para cada item a ser criado}
+	\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;} \PYGdefault{n}{i} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{TAM\PYGdefaultZus{}POP}\PYGdefault{p}{;} \PYGdefault{n}{i}\PYGdefault{o}{++}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+
+		\PYGdefault{c+c1}{// Aloca suas variáveis que armazenarão suas informações}
+		\PYGdefault{n}{p\PYGdefaultZus{}local}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]}          \PYGdefault{o}{=} \PYGdefault{n}{calloc}\PYGdefault{p}{(}\PYGdefault{l+m+mi}{1}\PYGdefault{p}{,} \PYGdefault{k}{sizeof}\PYGdefault{p}{(}\PYGdefault{n}{Solucao}\PYGdefault{p}{));}
+		\PYGdefault{n}{p\PYGdefaultZus{}local}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{excesso} \PYGdefault{o}{=} \PYGdefault{n}{calloc}\PYGdefault{p}{(}\PYGdefault{n}{QUANT\PYGdefaultZus{}AGENTES}\PYGdefault{p}{,} \PYGdefault{k}{sizeof}\PYGdefault{p}{(}\PYGdefault{k+kt}{int}\PYGdefault{p}{));}
+		\PYGdefault{n}{p\PYGdefaultZus{}local}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas} \PYGdefault{o}{=} \PYGdefault{n}{calloc}\PYGdefault{p}{(}\PYGdefault{n}{QUANT\PYGdefaultZus{}TAREFAS}\PYGdefault{p}{,} \PYGdefault{k}{sizeof}\PYGdefault{p}{(}\PYGdefault{k+kt}{int}\PYGdefault{p}{));}
+
+		\PYGdefault{c+c1}{// Gera valores pra este indivíduo}
+		\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{j} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;} \PYGdefault{n}{j} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{QUANT\PYGdefaultZus{}TAREFAS}\PYGdefault{p}{;} \PYGdefault{n}{j}\PYGdefault{o}{++}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+			\PYGdefault{c+c1}{// O primeiro indivíduo será gerado de forma gulosa e os outros}
+				\PYGdefault{c+c1}{// Serão uma mistura de Guloso com Aleatoriedade}
+
+			\PYGdefault{c+c1}{// Se não for o primeiro indivíduo, possui 66\PYGdefaultZpc{} de gerar valores}
+				\PYGdefault{c+c1}{// por meio de função randomica}
+			\PYGdefault{k}{if} \PYGdefault{p}{(}\PYGdefault{n}{i} \PYGdefault{o}{\PYGdefaultZgt{}} \PYGdefault{l+m+mi}{0} \PYGdefault{o}{\PYGdefaultZam{}\PYGdefaultZam{}} \PYGdefault{n}{random}\PYGdefault{p}{()} \PYGdefault{o}{\PYGdefaultZpc{}} \PYGdefault{l+m+mi}{3} \PYGdefault{o}{!=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+				\PYGdefault{n}{p\PYGdefaultZus{}local}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}\PYGdefault{p}{[}\PYGdefault{n}{j}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{n}{random}\PYGdefault{p}{()} \PYGdefault{o}{\PYGdefaultZpc{}} \PYGdefault{n}{QUANT\PYGdefaultZus{}AGENTES}\PYGdefault{p}{;}
+
+			\PYGdefault{c+c1}{// Caso contrário, utiliza uma geração gulosa pra esta tarefa.}
+			\PYGdefault{p}{\PYGdefaultZcb{}} \PYGdefault{k}{else} \PYGdefault{p}{\PYGdefaultZob{}}
+				\PYGdefault{c+c1}{// O método guloso escolhe o recurso mais leve desta tarefa}
+				\PYGdefault{n}{p\PYGdefaultZus{}local}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}\PYGdefault{p}{[}\PYGdefault{n}{j}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+				\PYGdefault{n}{menor} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+
+				\PYGdefault{c+c1}{// Seleciona o agente que utiliza o menor recurso desta}
+					\PYGdefault{c+c1}{// tarefa}
+				\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{k} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{1}\PYGdefault{p}{;} \PYGdefault{n}{k} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{QUANT\PYGdefaultZus{}AGENTES}\PYGdefault{p}{;} \PYGdefault{n}{k}\PYGdefault{o}{++}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+					\PYGdefault{k}{if} \PYGdefault{p}{(}\PYGdefault{n}{RECURSOS\PYGdefaultZus{}A\PYGdefaultZus{}T}\PYGdefault{p}{[}\PYGdefault{n}{k}\PYGdefault{p}{][}\PYGdefault{n}{j}\PYGdefault{p}{]} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{RECURSOS\PYGdefaultZus{}A\PYGdefaultZus{}T}\PYGdefault{p}{[}\PYGdefault{n}{menor}\PYGdefault{p}{][}\PYGdefault{n}{j}\PYGdefault{p}{])} \PYGdefault{p}{\PYGdefaultZob{}}
+						\PYGdefault{n}{menor} \PYGdefault{o}{=} \PYGdefault{n}{k}\PYGdefault{p}{;}
+						\PYGdefault{n}{p\PYGdefaultZus{}local}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}\PYGdefault{p}{[}\PYGdefault{n}{j}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{n}{k}\PYGdefault{p}{;}
+					\PYGdefault{p}{\PYGdefaultZcb{}}
+				\PYGdefault{p}{\PYGdefaultZcb{}}
+			\PYGdefault{p}{\PYGdefaultZcb{}}
+		\PYGdefault{p}{\PYGdefaultZcb{}}
+
+		\PYGdefault{c+c1}{// Avalia o novo indivíduo gerado}
+		\PYGdefault{n}{Avalia\PYGdefaultZus{}Solucao}\PYGdefault{p}{(}\PYGdefault{n}{p\PYGdefaultZus{}local}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]);}
+	\PYGdefault{p}{\PYGdefaultZcb{}}
+\PYGdefault{p}{\PYGdefaultZcb{}}
+
+
+
+\PYGdefault{c+cm}{/*}
+\PYGdefault{c+cm}{ * Procedimento que realiza a seleção de dois indivíduos para a geração de um}
+\PYGdefault{c+cm}{ *	terceiro.}
+\PYGdefault{c+cm}{ */}
+\PYGdefault{k+kt}{void} \PYGdefault{n+nf}{Gera\PYGdefaultZus{}Filhos}\PYGdefault{p}{(}\PYGdefault{n}{Solucao} \PYGdefault{o}{**} \PYGdefault{n}{selecao}\PYGdefault{p}{,} \PYGdefault{n}{Solucao} \PYGdefault{o}{***} \PYGdefault{n}{filhos}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+	\PYGdefault{k+kt}{int} \PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{,} \PYGdefault{n}{j} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{,} \PYGdefault{n}{numero\PYGdefaultZus{}torneio} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+	\PYGdefault{n}{Solucao} \PYGdefault{o}{*} \PYGdefault{n}{i1} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{,} \PYGdefault{o}{*} \PYGdefault{n}{i2} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{,} \PYGdefault{o}{*} \PYGdefault{n}{buffer} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+
+	\PYGdefault{n}{Solucao} \PYGdefault{o}{**} \PYGdefault{n}{filhos\PYGdefaultZus{}local} \PYGdefault{o}{=} \PYGdefault{o}{*} \PYGdefault{n}{filhos}\PYGdefault{p}{;}
+
+	\PYGdefault{c+c1}{// O primeiro indivíduo gerado é o indivíduo com melhor avaliação de toda}
+		\PYGdefault{c+c1}{// população. Sendo assim, é realizado uma busca na população do}
+		\PYGdefault{c+c1}{// melhor indivíduo e adiciona\PYGdefaultZhy{}o na próxima geração.}
+	\PYGdefault{n}{j} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+	\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{1}\PYGdefault{p}{;} \PYGdefault{n}{i} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{TAM\PYGdefaultZus{}POP}\PYGdefault{p}{;} \PYGdefault{n}{i}\PYGdefault{o}{++}\PYGdefault{p}{)}
+		\PYGdefault{k}{if} \PYGdefault{p}{(}\PYGdefault{n}{selecao}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{avaliacao} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{selecao}\PYGdefault{p}{[}\PYGdefault{n}{j}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{avaliacao}\PYGdefault{p}{)}
+			\PYGdefault{n}{j} \PYGdefault{o}{=} \PYGdefault{n}{i}\PYGdefault{p}{;}
+
+	\PYGdefault{c+c1}{// Aloca memória pra nova solução}
+	\PYGdefault{n}{filhos\PYGdefaultZus{}local}\PYGdefault{p}{[}\PYGdefault{l+m+mi}{0}\PYGdefault{p}{]}            \PYGdefault{o}{=} \PYGdefault{n}{calloc}\PYGdefault{p}{(}\PYGdefault{l+m+mi}{1}\PYGdefault{p}{,} \PYGdefault{k}{sizeof}\PYGdefault{p}{(}\PYGdefault{n}{Solucao}\PYGdefault{p}{));}
+	\PYGdefault{n}{filhos\PYGdefaultZus{}local}\PYGdefault{p}{[}\PYGdefault{l+m+mi}{0}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{excesso}   \PYGdefault{o}{=} \PYGdefault{n}{calloc}\PYGdefault{p}{(}\PYGdefault{n}{QUANT\PYGdefaultZus{}AGENTES}\PYGdefault{p}{,} \PYGdefault{k}{sizeof}\PYGdefault{p}{(}\PYGdefault{k+kt}{int}\PYGdefault{p}{));}
+	\PYGdefault{n}{filhos\PYGdefaultZus{}local}\PYGdefault{p}{[}\PYGdefault{l+m+mi}{0}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}   \PYGdefault{o}{=} \PYGdefault{n}{calloc}\PYGdefault{p}{(}\PYGdefault{n}{QUANT\PYGdefaultZus{}TAREFAS}\PYGdefault{p}{,} \PYGdefault{k}{sizeof}\PYGdefault{p}{(}\PYGdefault{k+kt}{int}\PYGdefault{p}{));}
+
+	\PYGdefault{n}{filhos\PYGdefaultZus{}local}\PYGdefault{p}{[}\PYGdefault{l+m+mi}{0}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{avaliacao} \PYGdefault{o}{=} \PYGdefault{n}{selecao}\PYGdefault{p}{[}\PYGdefault{n}{j}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{avaliacao}\PYGdefault{p}{;}
+
+	\PYGdefault{c+c1}{// Copia as tarefas do elemento escolhido}
+	\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;} \PYGdefault{n}{i} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{QUANT\PYGdefaultZus{}TAREFAS}\PYGdefault{p}{;} \PYGdefault{n}{i}\PYGdefault{o}{++}\PYGdefault{p}{)}
+		\PYGdefault{n}{filhos\PYGdefaultZus{}local}\PYGdefault{p}{[}\PYGdefault{l+m+mi}{0}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{n}{selecao}\PYGdefault{p}{[}\PYGdefault{n}{j}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{];}
+
+
+	\PYGdefault{c+c1}{// Para os outros indivíduos que devem ser gerados, serão selecionados dois}
+		\PYGdefault{c+c1}{// pais por torneio e realizados a sua recombinação}
+	\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{1}\PYGdefault{p}{;} \PYGdefault{n}{i} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{p}{(}\PYGdefault{k+kt}{int}\PYGdefault{p}{)} \PYGdefault{n}{TAM\PYGdefaultZus{}POP} \PYGdefault{o}{*} \PYGdefault{n}{TAX\PYGdefaultZus{}CRUZAM} \PYGdefault{o}{+} \PYGdefault{l+m+mi}{1}\PYGdefault{p}{;} \PYGdefault{n}{i}\PYGdefault{o}{++}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+
+		\PYGdefault{c+c1}{// Quantidade de indivíduos que disputarão o torneio}
+		\PYGdefault{n}{numero\PYGdefaultZus{}torneio} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{1} \PYGdefault{o}{+} \PYGdefault{n}{random}\PYGdefault{p}{()} \PYGdefault{o}{\PYGdefaultZpc{}} \PYGdefault{p}{((}\PYGdefault{n}{TAM\PYGdefaultZus{}POP} \PYGdefault{o}{/} \PYGdefault{l+m+mi}{2}\PYGdefault{p}{)} \PYGdefault{o}{+} \PYGdefault{l+m+mi}{1}\PYGdefault{p}{);}
+
+		\PYGdefault{c+c1}{// Aloca o novo filho ainda vazio.}
+		\PYGdefault{n}{filhos\PYGdefaultZus{}local}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{n}{calloc}\PYGdefault{p}{(}\PYGdefault{l+m+mi}{1}\PYGdefault{p}{,} \PYGdefault{k}{sizeof}\PYGdefault{p}{(}\PYGdefault{n}{Solucao}\PYGdefault{p}{));}
+		\PYGdefault{n}{filhos\PYGdefaultZus{}local}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{excesso} \PYGdefault{o}{=} \PYGdefault{n}{calloc}\PYGdefault{p}{(}\PYGdefault{n}{QUANT\PYGdefaultZus{}AGENTES}\PYGdefault{p}{,} \PYGdefault{k}{sizeof}\PYGdefault{p}{(}\PYGdefault{k+kt}{int}\PYGdefault{p}{));}
+
+		\PYGdefault{c+c1}{// Realiza o torneio 1}
+		\PYGdefault{n}{i1} \PYGdefault{o}{=} \PYGdefault{n}{selecao}\PYGdefault{p}{[}\PYGdefault{n}{random}\PYGdefault{p}{()} \PYGdefault{o}{\PYGdefaultZpc{}} \PYGdefault{n}{TAM\PYGdefaultZus{}POP}\PYGdefault{p}{];}
+
+		\PYGdefault{c+c1}{// Realiza torneio pra seleção do primeiro pai}
+		\PYGdefault{n}{j} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+		\PYGdefault{k}{while} \PYGdefault{p}{(}\PYGdefault{n}{j}\PYGdefault{o}{++} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{numero\PYGdefaultZus{}torneio}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+			\PYGdefault{n}{buffer} \PYGdefault{o}{=} \PYGdefault{n}{selecao}\PYGdefault{p}{[}\PYGdefault{n}{random}\PYGdefault{p}{()} \PYGdefault{o}{\PYGdefaultZpc{}} \PYGdefault{n}{TAM\PYGdefaultZus{}POP}\PYGdefault{p}{];}
+
+			\PYGdefault{k}{if} \PYGdefault{p}{(}\PYGdefault{n}{buffer}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{avaliacao} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{i1}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{avaliacao}\PYGdefault{p}{)}
+				\PYGdefault{n}{i1} \PYGdefault{o}{=} \PYGdefault{n}{buffer}\PYGdefault{p}{;}
+		\PYGdefault{p}{\PYGdefaultZcb{}}
+
+		\PYGdefault{c+c1}{// Realiza o torneio 2}
+		\PYGdefault{n}{i2} \PYGdefault{o}{=} \PYGdefault{n}{selecao}\PYGdefault{p}{[}\PYGdefault{n}{random}\PYGdefault{p}{()} \PYGdefault{o}{\PYGdefaultZpc{}} \PYGdefault{n}{TAM\PYGdefaultZus{}POP}\PYGdefault{p}{];}
+
+		\PYGdefault{c+c1}{// Realiza torneio pra seleção do segundo pai}
+		\PYGdefault{n}{j} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+		\PYGdefault{k}{while} \PYGdefault{p}{(}\PYGdefault{n}{j}\PYGdefault{o}{++} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{numero\PYGdefaultZus{}torneio}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+			\PYGdefault{n}{buffer} \PYGdefault{o}{=} \PYGdefault{n}{selecao}\PYGdefault{p}{[}\PYGdefault{n}{random}\PYGdefault{p}{()} \PYGdefault{o}{\PYGdefaultZpc{}} \PYGdefault{n}{TAM\PYGdefaultZus{}POP}\PYGdefault{p}{];}
+
+			\PYGdefault{k}{if} \PYGdefault{p}{(}\PYGdefault{n}{buffer}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{avaliacao} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{i2}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{avaliacao}\PYGdefault{p}{)}
+				\PYGdefault{n}{i2} \PYGdefault{o}{=} \PYGdefault{n}{buffer}\PYGdefault{p}{;}
+		\PYGdefault{p}{\PYGdefaultZcb{}}
+
+		\PYGdefault{c+c1}{// Verifica se os dois pais são idênticos, caso sim, gera um outro}
+			\PYGdefault{c+c1}{// pai aleatório sem torneio e seleciona\PYGdefaultZhy{}o}
+		\PYGdefault{k}{if} \PYGdefault{p}{(}\PYGdefault{n}{i1} \PYGdefault{o}{==} \PYGdefault{n}{i2}\PYGdefault{p}{)}
+			\PYGdefault{n}{i2} \PYGdefault{o}{=} \PYGdefault{n}{selecao}\PYGdefault{p}{[}\PYGdefault{n}{random}\PYGdefault{p}{()} \PYGdefault{o}{\PYGdefaultZpc{}} \PYGdefault{n}{TAM\PYGdefaultZus{}POP}\PYGdefault{p}{];}
+
+		\PYGdefault{c+c1}{// Recombina os dois indivíduos}
+		\PYGdefault{n}{filhos\PYGdefaultZus{}local}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas} \PYGdefault{o}{=} \PYGdefault{n}{Recombina}\PYGdefault{p}{(}\PYGdefault{n}{i1}\PYGdefault{p}{,} \PYGdefault{n}{i2}\PYGdefault{p}{);}
+	\PYGdefault{p}{\PYGdefaultZcb{}}
+\PYGdefault{p}{\PYGdefaultZcb{}}
+
+
+
+\PYGdefault{c+cm}{/*}
+\PYGdefault{c+cm}{ * Procedimento que realiza a mutação dos filhos por meio do processo Creep}
+\PYGdefault{c+cm}{ *	Mutation.}
+\PYGdefault{c+cm}{ *}
+\PYGdefault{c+cm}{ * Não são todos os filhos que são mutados. Eles são escolhidos aleatoriamente}
+\PYGdefault{c+cm}{ *	e TAX\PYGdefaultZus{}MUT representa a porcentagem de mutação que cada indivíduo receberá.}
+\PYGdefault{c+cm}{ * Ao final, este novo é avaliado.}
+\PYGdefault{c+cm}{ */}
+\PYGdefault{k+kt}{void} \PYGdefault{n+nf}{Creep\PYGdefaultZus{}Mutation}\PYGdefault{p}{(}\PYGdefault{n}{Solucao} \PYGdefault{o}{***} \PYGdefault{n}{pop}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+	\PYGdefault{k+kt}{int} \PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{,} \PYGdefault{n}{j} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{,} \PYGdefault{n}{indice\PYGdefaultZus{}tarefa} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{,} \PYGdefault{n}{quant\PYGdefaultZus{}filhos} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{,} \PYGdefault{n}{agente\PYGdefaultZus{}atual} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+
+	\PYGdefault{c+c1}{// Quantidade de filhos gerados nesta próxima geração}
+	\PYGdefault{n}{quant\PYGdefaultZus{}filhos} \PYGdefault{o}{=} \PYGdefault{p}{(}\PYGdefault{k+kt}{int}\PYGdefault{p}{)} \PYGdefault{n}{TAM\PYGdefaultZus{}POP} \PYGdefault{o}{*} \PYGdefault{n}{TAX\PYGdefaultZus{}CRUZAM} \PYGdefault{o}{+} \PYGdefault{l+m+mi}{1}\PYGdefault{p}{;}
+
+	\PYGdefault{c+c1}{// Para cada filho}
+	\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;} \PYGdefault{n}{i} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{quant\PYGdefaultZus{}filhos}\PYGdefault{p}{;} \PYGdefault{n}{i}\PYGdefault{o}{++}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+
+		\PYGdefault{c+c1}{// Realiza mutação em uma porcentagem de do indivíduo}
+		\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{j} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;} \PYGdefault{n}{j} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{p}{(}\PYGdefault{k+kt}{int}\PYGdefault{p}{)} \PYGdefault{n}{QUANT\PYGdefaultZus{}TAREFAS} \PYGdefault{o}{*} \PYGdefault{n}{TAX\PYGdefaultZus{}MUT}\PYGdefault{p}{;} \PYGdefault{n}{j}\PYGdefault{o}{++}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+
+			\PYGdefault{c+c1}{// Muta a tarefa do indivíduo}
+			\PYGdefault{n}{indice\PYGdefaultZus{}tarefa} \PYGdefault{o}{=} \PYGdefault{n}{random}\PYGdefault{p}{()} \PYGdefault{o}{\PYGdefaultZpc{}} \PYGdefault{n}{QUANT\PYGdefaultZus{}TAREFAS}\PYGdefault{p}{;}
+
+			\PYGdefault{n}{agente\PYGdefaultZus{}atual} \PYGdefault{o}{=} \PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{pop}\PYGdefault{p}{)[}\PYGdefault{n}{i}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}\PYGdefault{p}{[}\PYGdefault{n}{indice\PYGdefaultZus{}tarefa}\PYGdefault{p}{];}
+
+			\PYGdefault{k}{do} \PYGdefault{p}{\PYGdefaultZob{}}
+				\PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{pop}\PYGdefault{p}{)[}\PYGdefault{n}{i}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}\PYGdefault{p}{[}\PYGdefault{n}{indice\PYGdefaultZus{}tarefa}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{n}{random}\PYGdefault{p}{()} \PYGdefault{o}{\PYGdefaultZpc{}} \PYGdefault{n}{QUANT\PYGdefaultZus{}AGENTES}\PYGdefault{p}{;}
+			\PYGdefault{p}{\PYGdefaultZcb{}} \PYGdefault{k}{while} \PYGdefault{p}{((}\PYGdefault{o}{*}\PYGdefault{n}{pop}\PYGdefault{p}{)[}\PYGdefault{n}{i}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}\PYGdefault{p}{[}\PYGdefault{n}{indice\PYGdefaultZus{}tarefa}\PYGdefault{p}{]} \PYGdefault{o}{==} \PYGdefault{n}{agente\PYGdefaultZus{}atual}\PYGdefault{p}{);}
+		\PYGdefault{p}{\PYGdefaultZcb{}}
+
+		\PYGdefault{c+c1}{// Avalia o novo indivíduo gerado.}
+		\PYGdefault{n}{Avalia\PYGdefaultZus{}Solucao}\PYGdefault{p}{((}\PYGdefault{o}{*}\PYGdefault{n}{pop}\PYGdefault{p}{)[}\PYGdefault{n}{i}\PYGdefault{p}{]);}
+	\PYGdefault{p}{\PYGdefaultZcb{}}
+\PYGdefault{p}{\PYGdefaultZcb{}}
+
+
+
+\PYGdefault{c+cm}{/*}
+\PYGdefault{c+cm}{ * Processo de geração de filhos e mutação.}
+\PYGdefault{c+cm}{ */}
+\PYGdefault{k+kt}{void} \PYGdefault{n+nf}{Recombinacao}\PYGdefault{p}{(}\PYGdefault{n}{Solucao} \PYGdefault{o}{**} \PYGdefault{n}{atual\PYGdefaultZus{}p}\PYGdefault{p}{,} \PYGdefault{n}{Solucao} \PYGdefault{o}{***} \PYGdefault{n}{proxima\PYGdefaultZus{}p}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+
+	\PYGdefault{c+c1}{// Gera filhos da próxima geraçãp}
+	\PYGdefault{n}{Gera\PYGdefaultZus{}Filhos}\PYGdefault{p}{(}\PYGdefault{n}{atual\PYGdefaultZus{}p}\PYGdefault{p}{,} \PYGdefault{n}{proxima\PYGdefaultZus{}p}\PYGdefault{p}{);}
+
+	\PYGdefault{c+c1}{// Muta os filhos gerados}
+	\PYGdefault{n}{Creep\PYGdefaultZus{}Mutation}\PYGdefault{p}{(}\PYGdefault{n}{proxima\PYGdefaultZus{}p}\PYGdefault{p}{);}
+\PYGdefault{p}{\PYGdefaultZcb{}}
+
+
+\PYGdefault{c+cm}{/*}
+\PYGdefault{c+cm}{ * Algoritmo Genético segundo Lopes 2008.}
+\PYGdefault{c+cm}{ */}
+\PYGdefault{n}{Solucao} \PYGdefault{o}{*} \PYGdefault{n+nf}{Algoritmo\PYGdefaultZus{}Genetico}\PYGdefault{p}{()} \PYGdefault{p}{\PYGdefaultZob{}}
+	\PYGdefault{n}{Solucao} \PYGdefault{o}{**} \PYGdefault{n}{p\PYGdefaultZus{}atual} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{,} \PYGdefault{o}{**} \PYGdefault{n}{p\PYGdefaultZus{}proxima} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+	\PYGdefault{n}{Solucao} \PYGdefault{o}{*} \PYGdefault{n}{melhor\PYGdefaultZus{}Solucao} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+
+	\PYGdefault{c+c1}{// Instancia as duas populações}
+	\PYGdefault{n}{Instancia\PYGdefaultZus{}Populacoes}\PYGdefault{p}{(}\PYGdefault{o}{\PYGdefaultZam{}}\PYGdefault{n}{p\PYGdefaultZus{}atual}\PYGdefault{p}{);}
+	\PYGdefault{n}{Instancia\PYGdefaultZus{}Populacoes}\PYGdefault{p}{(}\PYGdefault{o}{\PYGdefaultZam{}}\PYGdefault{n}{p\PYGdefaultZus{}proxima}\PYGdefault{p}{);}
+
+	\PYGdefault{c+c1}{// Gera a população inicial para execução}
+	\PYGdefault{n}{Cria\PYGdefaultZus{}Nova\PYGdefaultZus{}Populacao}\PYGdefault{p}{(}\PYGdefault{o}{\PYGdefaultZam{}}\PYGdefault{n}{p\PYGdefaultZus{}atual}\PYGdefault{p}{);}
+
+	\PYGdefault{c+c1}{// Copia o melhor indivíduo gerado aleatoriamnte}
+	\PYGdefault{n}{Copia\PYGdefaultZus{}Melhor\PYGdefaultZus{}Solucao}\PYGdefault{p}{(}\PYGdefault{n}{p\PYGdefaultZus{}atual}\PYGdefault{p}{,} \PYGdefault{o}{\PYGdefaultZam{}}\PYGdefault{n}{melhor\PYGdefaultZus{}Solucao}\PYGdefault{p}{);}
+
+	\PYGdefault{c+c1}{// Inicia o contador de tempo}
+	\PYGdefault{n}{start}   \PYGdefault{o}{=} \PYGdefault{n}{time}\PYGdefault{p}{(}\PYGdefault{n+nb}{NULL}\PYGdefault{p}{);}
+    \PYGdefault{n}{endwait} \PYGdefault{o}{=} \PYGdefault{n}{start} \PYGdefault{o}{+} \PYGdefault{n}{SECONDS}\PYGdefault{p}{;}
+
+	\PYGdefault{k}{do} \PYGdefault{p}{\PYGdefaultZob{}}
+		\PYGdefault{c+c1}{// Realiza a recombinação gerando novos filhos já mutados}
+		\PYGdefault{n}{Recombinacao}\PYGdefault{p}{(}\PYGdefault{n}{p\PYGdefaultZus{}atual}\PYGdefault{p}{,} \PYGdefault{o}{\PYGdefaultZam{}}\PYGdefault{n}{p\PYGdefaultZus{}proxima}\PYGdefault{p}{);}
+
+		\PYGdefault{c+c1}{// Completa a população com indivíduos da população anterior}
+		\PYGdefault{n}{Seleciona\PYGdefaultZus{}Nova\PYGdefaultZus{}Geracao}\PYGdefault{p}{(}\PYGdefault{o}{\PYGdefaultZam{}}\PYGdefault{n}{p\PYGdefaultZus{}atual}\PYGdefault{p}{,} \PYGdefault{o}{\PYGdefaultZam{}}\PYGdefault{n}{p\PYGdefaultZus{}proxima}\PYGdefault{p}{);}
+
+		\PYGdefault{c+c1}{// Verifica a existência de um indivíduo melhor que o atual conhecido}
+		\PYGdefault{n}{Copia\PYGdefaultZus{}Melhor\PYGdefaultZus{}Solucao}\PYGdefault{p}{(}\PYGdefault{n}{p\PYGdefaultZus{}atual}\PYGdefault{p}{,} \PYGdefault{o}{\PYGdefaultZam{}}\PYGdefault{n}{melhor\PYGdefaultZus{}Solucao}\PYGdefault{p}{);}
+
+		\PYGdefault{c+c1}{// Recebe o tempo atual.}
+		\PYGdefault{n}{start} \PYGdefault{o}{=} \PYGdefault{n}{time}\PYGdefault{p}{(}\PYGdefault{n+nb}{NULL}\PYGdefault{p}{);}
+
+		\PYGdefault{c+c1}{// Verifica se o tempo excedeu o limite estabelecido por parâmentro.}
+	\PYGdefault{p}{\PYGdefaultZcb{}} \PYGdefault{k}{while} \PYGdefault{p}{(}\PYGdefault{n}{start} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{endwait}\PYGdefault{p}{);}
+
+	\PYGdefault{c+c1}{// Desaloca populações após o fim do algoritmo}
+	\PYGdefault{n}{Desaloca\PYGdefaultZus{}Populacao}\PYGdefault{p}{(}\PYGdefault{o}{\PYGdefaultZam{}}\PYGdefault{n}{p\PYGdefaultZus{}atual}\PYGdefault{p}{);}
+	\PYGdefault{n}{Desaloca\PYGdefaultZus{}Populacao}\PYGdefault{p}{(}\PYGdefault{o}{\PYGdefaultZam{}}\PYGdefault{n}{p\PYGdefaultZus{}proxima}\PYGdefault{p}{);}
+
+	\PYGdefault{c+c1}{// Retorna o melhor indivíduo encontrado}
+	\PYGdefault{k}{return} \PYGdefault{n}{melhor\PYGdefaultZus{}Solucao}\PYGdefault{p}{;}
+\PYGdefault{p}{\PYGdefaultZcb{}}
+
+
+
+\PYGdefault{c+cm}{/*}
+\PYGdefault{c+cm}{ * Procedimento principal}
+\PYGdefault{c+cm}{ */}
+\PYGdefault{k+kt}{int} \PYGdefault{n+nf}{main}\PYGdefault{p}{(}\PYGdefault{k+kt}{int} \PYGdefault{n}{argc}\PYGdefault{p}{,} \PYGdefault{k+kt}{char}\PYGdefault{o}{**} \PYGdefault{n}{argv}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+	\PYGdefault{n}{Solucao} \PYGdefault{o}{*} \PYGdefault{n}{solve}\PYGdefault{p}{;}
+	\PYGdefault{n}{printf}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{l+s+se}{\PYGdefaultZbs{}n}\PYGdefault{l+s}{/*\PYGdefaultZdq{}}\PYGdefault{p}{);}
+	\PYGdefault{n}{printf}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{l+s+se}{\PYGdefaultZbs{}n}\PYGdefault{l+s}{ * Trabalho de Projeto e Análise de Algoritmo\PYGdefaultZdq{}}\PYGdefault{p}{);}
+ 	\PYGdefault{n}{printf}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{l+s+se}{\PYGdefaultZbs{}n}\PYGdefault{l+s}{ * Período 16.1\PYGdefaultZdq{}}\PYGdefault{p}{);}
+ 	\PYGdefault{n}{printf}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{l+s+se}{\PYGdefaultZbs{}n}\PYGdefault{l+s}{ * \PYGdefaultZdq{}}\PYGdefault{p}{);}
+ 	\PYGdefault{n}{printf}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{l+s+se}{\PYGdefaultZbs{}n}\PYGdefault{l+s}{ * Desenvolver Metaheurísticas para o Problema de Alocação Generalizada\PYGdefaultZdq{}}\PYGdefault{p}{);}
+ 	\PYGdefault{n}{printf}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{l+s+se}{\PYGdefaultZbs{}n}\PYGdefault{l+s}{ * \PYGdefaultZdq{}}\PYGdefault{p}{);}
+ 	\PYGdefault{n}{printf}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{l+s+se}{\PYGdefaultZbs{}n}\PYGdefault{l+s}{ * Algoritmo: Genético.\PYGdefaultZdq{}}\PYGdefault{p}{);}
+ 	\PYGdefault{n}{printf}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{l+s+se}{\PYGdefaultZbs{}n}\PYGdefault{l+s}{ * Data: 01/08/2016.\PYGdefaultZdq{}}\PYGdefault{p}{);}
+ 	\PYGdefault{n}{printf}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{l+s+se}{\PYGdefaultZbs{}n}\PYGdefault{l+s}{ * Distribuição Livre, desde que referenciando o autor.\PYGdefaultZdq{}}\PYGdefault{p}{);}
+ 	\PYGdefault{n}{printf}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{l+s+se}{\PYGdefaultZbs{}n}\PYGdefault{l+s}{ * \PYGdefaultZdq{}}\PYGdefault{p}{);}
+ 	\PYGdefault{n}{printf}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{l+s+se}{\PYGdefaultZbs{}n}\PYGdefault{l+s}{ * Professor: Haroldo Santos\PYGdefaultZdq{}}\PYGdefault{p}{);}
+ 	\PYGdefault{n}{printf}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{l+s+se}{\PYGdefaultZbs{}n}\PYGdefault{l+s}{ * \PYGdefaultZdq{}}\PYGdefault{p}{);}
+ 	\PYGdefault{n}{printf}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{l+s+se}{\PYGdefaultZbs{}n}\PYGdefault{l+s}{ * Autor do Trabalho: Rodolfo Labiapari Mansur Guimarães\PYGdefaultZdq{}}\PYGdefault{p}{);}
+ 	\PYGdefault{n}{printf}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{l+s+se}{\PYGdefaultZbs{}n}\PYGdefault{l+s}{ */\PYGdefaultZdq{}}\PYGdefault{p}{);}
+
+	\PYGdefault{k}{if} \PYGdefault{p}{(}\PYGdefault{n}{argc} \PYGdefault{o}{!=} \PYGdefault{l+m+mi}{4}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+		\PYGdefault{n}{printf}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{l+s+se}{\PYGdefaultZbs{}n\PYGdefaultZbs{}n}\PYGdefault{l+s}{Erro nos parâmetros! Quantidade lida: \PYGdefaultZpc{}d}\PYGdefault{l+s+se}{\PYGdefaultZbs{}t}\PYGdefault{l+s}{ Quantidade requerida: \PYGdefaultZpc{}d.\PYGdefaultZdq{}}\PYGdefault{p}{,} \PYGdefault{n}{argc}\PYGdefault{p}{,} \PYGdefault{l+m+mi}{4}\PYGdefault{p}{);}
+		\PYGdefault{n}{printf}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{l+s+se}{\PYGdefaultZbs{}n}\PYGdefault{l+s}{nome\PYGdefaultZus{}programa arq\PYGdefaultZus{}configuracao arq\PYGdefaultZus{}instancia seed}\PYGdefault{l+s+se}{\PYGdefaultZbs{}n\PYGdefaultZbs{}n}\PYGdefault{l+s}{\PYGdefaultZdq{}}\PYGdefault{p}{);}
+		\PYGdefault{n}{exit}\PYGdefault{p}{(}\PYGdefault{o}{\PYGdefaultZhy{}}\PYGdefault{l+m+mi}{1}\PYGdefault{p}{);}
+	\PYGdefault{p}{\PYGdefaultZcb{}}
+ 	\PYGdefault{c+c1}{//printf(\PYGdefaultZdq{}\PYGdefaultZbs{}n\PYGdefaultZbs{}nExecutando...\PYGdefaultZbs{}n\PYGdefaultZdq{});}
+
+	\PYGdefault{k+kt}{char} \PYGdefault{o}{*} \PYGdefault{n}{instancia} \PYGdefault{o}{=} \PYGdefault{n}{argv}\PYGdefault{p}{[}\PYGdefault{l+m+mi}{2}\PYGdefault{p}{];}
+	\PYGdefault{k+kt}{char} \PYGdefault{o}{*} \PYGdefault{n}{configuracao} \PYGdefault{o}{=} \PYGdefault{n}{argv}\PYGdefault{p}{[}\PYGdefault{l+m+mi}{1}\PYGdefault{p}{];}
+	\PYGdefault{n}{srand}\PYGdefault{p}{(}\PYGdefault{n}{atoi}\PYGdefault{p}{(}\PYGdefault{n}{argv}\PYGdefault{p}{[}\PYGdefault{l+m+mi}{3}\PYGdefault{p}{]));}
+
+	\PYGdefault{n}{Le\PYGdefaultZus{}Instancia}\PYGdefault{p}{(}\PYGdefault{n}{instancia}\PYGdefault{p}{);}
+	\PYGdefault{n}{Le\PYGdefaultZus{}Parametros}\PYGdefault{p}{(}\PYGdefault{n}{configuracao}\PYGdefault{p}{);}
+
+	\PYGdefault{n}{out} \PYGdefault{o}{=} \PYGdefault{n}{fopen} \PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}out\PYGdefaultZus{}genetico.txt\PYGdefaultZdq{}}\PYGdefault{p}{,} \PYGdefault{l+s}{\PYGdefaultZdq{}a\PYGdefaultZdq{}}\PYGdefault{p}{);}
+
+	\PYGdefault{n}{solve} \PYGdefault{o}{=} \PYGdefault{n}{Algoritmo\PYGdefaultZus{}Genetico}\PYGdefault{p}{();}
+
+	\PYGdefault{n}{Imprime\PYGdefaultZus{}Solucao}\PYGdefault{p}{(}\PYGdefault{n}{solve}\PYGdefault{p}{);}
+
+	\PYGdefault{n}{free}\PYGdefault{p}{(}\PYGdefault{n}{solve}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}\PYGdefault{p}{);}
+	\PYGdefault{n}{free}\PYGdefault{p}{(}\PYGdefault{n}{solve}\PYGdefault{p}{);}
+
+	\PYGdefault{n}{fflush}\PYGdefault{p}{(}\PYGdefault{n}{out}\PYGdefault{p}{);}
+	\PYGdefault{n}{fclose}\PYGdefault{p}{(}\PYGdefault{n}{out}\PYGdefault{p}{);}
+
+	\PYGdefault{n}{fflush}\PYGdefault{p}{(}\PYGdefault{n}{stdout}\PYGdefault{p}{);}
+
+	\PYGdefault{k}{return} \PYGdefault{p}{(}\PYGdefault{n}{EXIT\PYGdefaultZus{}SUCCESS}\PYGdefault{p}{);}
+\PYGdefault{p}{\PYGdefaultZcb{}}
+\end{Verbatim}

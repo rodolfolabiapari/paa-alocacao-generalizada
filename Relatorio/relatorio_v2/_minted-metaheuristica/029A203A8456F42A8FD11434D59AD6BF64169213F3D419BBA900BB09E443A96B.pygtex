@@ -1,0 +1,68 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefault{c+cm}{/*}
+\PYGdefault{c+cm}{ * Trabalho de Projeto e Análise de Algoritmo}
+\PYGdefault{c+cm}{ * Período 16.1}
+\PYGdefault{c+cm}{ *}
+\PYGdefault{c+cm}{ * Desenvolver Metaheurísticas para o Problema de Alocação Generalizada}
+\PYGdefault{c+cm}{ *}
+\PYGdefault{c+cm}{ * Funções Genéricas do Problam GAP.}
+\PYGdefault{c+cm}{ * Data: 01/08/2016.}
+\PYGdefault{c+cm}{ * Distribuição Livre, desde que referenciando o autor.}
+\PYGdefault{c+cm}{ *}
+\PYGdefault{c+cm}{ * Professor: Haroldo Santos}
+\PYGdefault{c+cm}{ *}
+\PYGdefault{c+cm}{ * Autor do Trabalho: Rodolfo Labiapari Mansur Guimarães}
+\PYGdefault{c+cm}{ */}
+
+\PYGdefault{c+cp}{\PYGdefaultZsh{}include} \PYGdefault{c+cpf}{\PYGdefaultZlt{}time.h\PYGdefaultZgt{}}
+
+\PYGdefault{c+cm}{/*}
+\PYGdefault{c+cm}{ * Estrutura de dados para armazenamento das informações de conjunto de}
+\PYGdefault{c+cm}{ *	soluções.}
+\PYGdefault{c+cm}{ *}
+\PYGdefault{c+cm}{ * excesso \PYGdefaultZhy{} valor com a capacidade atual de cada agente desta solução}
+\PYGdefault{c+cm}{ * tarefas \PYGdefaultZhy{} Vetor com tamanho Tarefas onde cada endereço é indicado o agente}
+\PYGdefault{c+cm}{ *	responsável por tal}
+\PYGdefault{c+cm}{ * avaliação \PYGdefaultZhy{} Valor fitness da solução (sum\PYGdefaultZus{}excesso + custo) * penalidade}
+\PYGdefault{c+cm}{ * custo \PYGdefaultZhy{} custo total desta solução}
+\PYGdefault{c+cm}{ */}
+\PYGdefault{k}{typedef} \PYGdefault{k}{struct} \PYGdefault{n}{Struct\PYGdefaultZus{}Solucao} \PYGdefault{p}{\PYGdefaultZob{}}
+	\PYGdefault{k+kt}{int} \PYGdefault{o}{*} \PYGdefault{n}{excesso}\PYGdefault{p}{;}
+	\PYGdefault{k+kt}{int} \PYGdefault{o}{*} \PYGdefault{n}{tarefas}\PYGdefault{p}{;}
+	\PYGdefault{k+kt}{double} \PYGdefault{n}{avaliacao}\PYGdefault{p}{;}
+	\PYGdefault{k+kt}{double} \PYGdefault{n}{custo}\PYGdefault{p}{;}
+\PYGdefault{p}{\PYGdefaultZcb{}} \PYGdefault{n}{Solucao}\PYGdefault{p}{;}
+
+\PYGdefault{k+kt}{int} \PYGdefault{n}{QUANT\PYGdefaultZus{}TAREFAS}   \PYGdefault{p}{;} \PYGdefault{c+c1}{// Quantidade de tarefas}
+\PYGdefault{k+kt}{int} \PYGdefault{n}{QUANT\PYGdefaultZus{}AGENTES}   \PYGdefault{p}{;} \PYGdefault{c+c1}{// Quantidade de agentes}
+\PYGdefault{k+kt}{int} \PYGdefault{o}{*} \PYGdefault{n}{CAPAC\PYGdefaultZus{}AGENTES} \PYGdefault{p}{;} \PYGdefault{c+c1}{// Vetor com capacidade máxima de cada gente.}
+\PYGdefault{k+kt}{int} \PYGdefault{o}{**} \PYGdefault{n}{RECURSOS\PYGdefaultZus{}A\PYGdefaultZus{}T} \PYGdefault{p}{;} \PYGdefault{c+c1}{// Matriz de recursos[a,t]}
+\PYGdefault{k+kt}{int} \PYGdefault{o}{**} \PYGdefault{n}{CUSTO\PYGdefaultZus{}A\PYGdefaultZus{}T}    \PYGdefault{p}{;} \PYGdefault{c+c1}{// Matriz de custo [a,t]}
+
+
+\PYGdefault{k+kt}{int}    \PYGdefault{n}{TAM\PYGdefaultZus{}POP}    \PYGdefault{p}{;} \PYGdefault{c+c1}{// Tamanho da população do algoritmo}
+\PYGdefault{k+kt}{int}    \PYGdefault{n}{ITERACOES}  \PYGdefault{p}{;} \PYGdefault{c+c1}{// Quantidade de iterações}
+\PYGdefault{k+kt}{float}  \PYGdefault{n}{TAX\PYGdefaultZus{}CRUZAM} \PYGdefault{p}{;} \PYGdefault{c+c1}{// Porcentagem de cruzamentos a serem realizados}
+\PYGdefault{k+kt}{float}  \PYGdefault{n}{TAX\PYGdefaultZus{}MUT}    \PYGdefault{p}{;} \PYGdefault{c+c1}{// Porcentagem dos dados do filho que serão mutados}
+
+\PYGdefault{k+kt}{char} \PYGdefault{n}{IMPRIMIR} \PYGdefault{p}{;} \PYGdefault{c+c1}{// Variável que permite impressão na tela.}
+\PYGdefault{k+kt}{int} \PYGdefault{n}{SECONDS}   \PYGdefault{p}{;} \PYGdefault{c+c1}{// Tempo lido pelo arquivo de configuração}
+\PYGdefault{k+kt}{int} \PYGdefault{n}{MAXIteracoes} \PYGdefault{p}{;} \PYGdefault{c+c1}{// Quantidade de iterações daquela temperatura}
+\PYGdefault{k+kt}{FILE} \PYGdefault{o}{*} \PYGdefault{n}{out}    \PYGdefault{p}{;} \PYGdefault{c+c1}{// Arquivo para gravação de dados permanente}
+\PYGdefault{k+kt}{time\PYGdefaultZus{}t} \PYGdefault{n}{endwait}\PYGdefault{p}{,} \PYGdefault{n}{start}\PYGdefault{p}{;} \PYGdefault{c+c1}{// Variáveis de tempo para cálculo do intervalo de}
+	\PYGdefault{c+c1}{//tempo de execução}
+
+\PYGdefault{k+kt}{double} \PYGdefault{n+nf}{Avalia\PYGdefaultZus{}Solucao}\PYGdefault{p}{(}\PYGdefault{n}{Solucao} \PYGdefault{o}{*} \PYGdefault{n}{sol}\PYGdefault{p}{)} \PYGdefault{p}{;}
+\PYGdefault{k+kt}{void} \PYGdefault{n+nf}{Gera\PYGdefaultZus{}Vizinho}\PYGdefault{p}{(}\PYGdefault{n}{Solucao} \PYGdefault{o}{*} \PYGdefault{n}{atual}\PYGdefault{p}{,} \PYGdefault{n}{Solucao} \PYGdefault{o}{**} \PYGdefault{n}{proxima}\PYGdefault{p}{)} \PYGdefault{p}{;}
+\PYGdefault{n}{Solucao} \PYGdefault{o}{*} \PYGdefault{n+nf}{Instancia\PYGdefaultZus{}Solucao}\PYGdefault{p}{()} \PYGdefault{p}{;}
+\PYGdefault{k+kt}{void} \PYGdefault{n+nf}{Gera\PYGdefaultZus{}Solucao\PYGdefaultZus{}Aleatoria}\PYGdefault{p}{(}\PYGdefault{n}{Solucao} \PYGdefault{o}{**} \PYGdefault{n}{s}\PYGdefault{p}{)} \PYGdefault{p}{;}
+\PYGdefault{k+kt}{char} \PYGdefault{n+nf}{Teste\PYGdefaultZus{}Aceita\PYGdefaultZus{}Nova\PYGdefaultZus{}Solucao}\PYGdefault{p}{(}\PYGdefault{k+kt}{double} \PYGdefault{n}{temp}\PYGdefault{p}{,} \PYGdefault{n}{Solucao} \PYGdefault{o}{**} \PYGdefault{n}{atual}\PYGdefault{p}{,} \PYGdefault{n}{Solucao} \PYGdefault{o}{*} \PYGdefault{n}{proxima}\PYGdefault{p}{)} \PYGdefault{p}{;}
+\PYGdefault{k+kt}{void} \PYGdefault{n+nf}{Aceita\PYGdefaultZus{}Nova\PYGdefaultZus{}Solucao}\PYGdefault{p}{(}\PYGdefault{n}{Solucao} \PYGdefault{o}{**} \PYGdefault{n}{atual}\PYGdefault{p}{,} \PYGdefault{n}{Solucao} \PYGdefault{o}{*} \PYGdefault{n}{proxima}\PYGdefault{p}{)} \PYGdefault{p}{;}
+\PYGdefault{k+kt}{void} \PYGdefault{n+nf}{Le\PYGdefaultZus{}Instancia}\PYGdefault{p}{(}\PYGdefault{k+kt}{char} \PYGdefault{o}{*} \PYGdefault{n}{path}\PYGdefault{p}{)} \PYGdefault{p}{;}
+\PYGdefault{k+kt}{void} \PYGdefault{n+nf}{Imprime\PYGdefaultZus{}Solucao}\PYGdefault{p}{(}\PYGdefault{n}{Solucao} \PYGdefault{o}{*} \PYGdefault{n}{ind}\PYGdefault{p}{)} \PYGdefault{p}{;}
+\PYGdefault{k+kt}{void} \PYGdefault{n+nf}{Imprime\PYGdefaultZus{}Status}\PYGdefault{p}{(}\PYGdefault{k+kt}{double} \PYGdefault{n}{t}\PYGdefault{p}{,} \PYGdefault{n}{Solucao} \PYGdefault{o}{*} \PYGdefault{n}{m}\PYGdefault{p}{)} \PYGdefault{p}{;}
+\PYGdefault{k+kt}{void} \PYGdefault{n+nf}{Desaloca\PYGdefaultZus{}Solucao}\PYGdefault{p}{(}\PYGdefault{n}{Solucao} \PYGdefault{o}{**} \PYGdefault{n}{p}\PYGdefault{p}{)} \PYGdefault{p}{;}
+\PYGdefault{n}{Solucao} \PYGdefault{o}{*} \PYGdefault{n+nf}{Instancia\PYGdefaultZus{}Solucao\PYGdefaultZus{}Aleatoria}\PYGdefault{p}{()} \PYGdefault{p}{;}
+\PYGdefault{k+kt}{void} \PYGdefault{n+nf}{Desaloca\PYGdefaultZus{}Populacao}\PYGdefault{p}{(}\PYGdefault{n}{Solucao} \PYGdefault{o}{***} \PYGdefault{n}{p}\PYGdefault{p}{)} \PYGdefault{p}{;}
+\PYGdefault{k+kt}{void} \PYGdefault{n+nf}{Imprime\PYGdefaultZus{}Instancia}\PYGdefault{p}{()} \PYGdefault{p}{;}
+\end{Verbatim}

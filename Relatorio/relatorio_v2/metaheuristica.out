@@ -1,0 +1,65 @@
+\BOOKMARK [1][-]{section.1}{Introdu\347\343o}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{Problema da Aloca\347\343o Generalizada}{section.1}% 2
+\BOOKMARK [2][-]{subsection.1.2}{Heur\355stica em Algoritmos}{section.1}% 3
+\BOOKMARK [1][-]{section.2}{Decis\365es Iniciais de Projeto}{}% 4
+\BOOKMARK [2][-]{subsection.2.1}{Modulariza\347\343o de Fun\347\365es em Arquivos}{section.2}% 5
+\BOOKMARK [2][-]{subsection.2.2}{Estrutura de Dados}{section.2}% 6
+\BOOKMARK [2][-]{subsection.2.3}{Gera\347\343o de Vizinhos Otimizada}{section.2}% 7
+\BOOKMARK [2][-]{subsection.2.4}{Fun\347\343o Avalia\347\343o}{section.2}% 8
+\BOOKMARK [1][-]{section.3}{Algoritmo Gen\351tico}{}% 9
+\BOOKMARK [2][-]{subsection.3.1}{Execu\347\343o}{section.3}% 10
+\BOOKMARK [3][-]{subsubsection.3.1.1}{Criando Uma Popula\347\343o Inicial}{subsection.3.1}% 11
+\BOOKMARK [3][-]{subsubsection.3.1.2}{Gera\347\343o de Novos Filhos e Muta\347\343o}{subsection.3.1}% 12
+\BOOKMARK [3][-]{subsubsection.3.1.3}{Sele\347\343o}{subsection.3.1}% 13
+\BOOKMARK [2][-]{subsection.3.2}{Arquivos de Configura\347\343o de Execu\347\343o}{section.3}% 14
+\BOOKMARK [1][-]{section.4}{Algoritmo de Recozimento Simulado}{}% 15
+\BOOKMARK [2][-]{subsection.4.1}{Execu\347\343o}{section.4}% 16
+\BOOKMARK [3][-]{subsubsection.4.1.1}{Atualiza\347\343o de Temperatura}{subsection.4.1}% 17
+\BOOKMARK [2][-]{subsection.4.2}{Arquivos de Configura\347\343o de Execu\347\343o}{section.4}% 18
+\BOOKMARK [1][-]{section.5}{M\351todo Rein\355cio}{}% 19
+\BOOKMARK [2][-]{subsection.5.1}{Execu\347\343o}{section.5}% 20
+\BOOKMARK [2][-]{subsection.5.2}{Arquivos de Configura\347\343o de Execu\347\343o}{section.5}% 21
+\BOOKMARK [1][-]{section.6}{Greedy Randomized Adaptive Search Procedure \(GRASP\)}{}% 22
+\BOOKMARK [2][-]{subsection.6.1}{Execu\347\343o}{section.6}% 23
+\BOOKMARK [3][-]{subsubsection.6.1.1}{Constru\347\343o Randomicamente Gulosa com Otimiza\347\343o em Avaliza\347\343o de Solu\347\343o}{subsection.6.1}% 24
+\BOOKMARK [2][-]{subsection.6.2}{Arquivos de Configura\347\343o de Execu\347\343o}{section.6}% 25
+\BOOKMARK [1][-]{section.7}{Entrada de Argumentos por Linha de Comando}{}% 26
+\BOOKMARK [1][-]{section.8}{Experimenta\347\343o}{}% 27
+\BOOKMARK [2][-]{subsection.8.1}{Ambiente de Hardware e Software Utilizado para Compila\347\343o}{section.8}% 28
+\BOOKMARK [2][-]{subsection.8.2}{An\341lise de C\363digo}{section.8}% 29
+\BOOKMARK [2][-]{subsection.8.3}{Inst\342ncias}{section.8}% 30
+\BOOKMARK [1][-]{section.9}{Resultados}{}% 31
+\BOOKMARK [2][-]{subsection.9.1}{Resultados em Gr\341ficos}{section.9}% 32
+\BOOKMARK [3][-]{subsubsection.9.1.1}{Inst\342ncia a05100}{subsection.9.1}% 33
+\BOOKMARK [3][-]{subsubsection.9.1.2}{Inst\342ncia a05200}{subsection.9.1}% 34
+\BOOKMARK [3][-]{subsubsection.9.1.3}{Inst\342ncia a10100}{subsection.9.1}% 35
+\BOOKMARK [3][-]{subsubsection.9.1.4}{Inst\342ncia a10200}{subsection.9.1}% 36
+\BOOKMARK [3][-]{subsubsection.9.1.5}{Inst\342ncia a20100}{subsection.9.1}% 37
+\BOOKMARK [3][-]{subsubsection.9.1.6}{Inst\342ncia a20200}{subsection.9.1}% 38
+\BOOKMARK [3][-]{subsubsection.9.1.7}{Inst\342ncia c05100}{subsection.9.1}% 39
+\BOOKMARK [3][-]{subsubsection.9.1.8}{Inst\342ncia c05200}{subsection.9.1}% 40
+\BOOKMARK [3][-]{subsubsection.9.1.9}{Inst\342ncia c10100}{subsection.9.1}% 41
+\BOOKMARK [3][-]{subsubsection.9.1.10}{Inst\342ncia c10200}{subsection.9.1}% 42
+\BOOKMARK [3][-]{subsubsection.9.1.11}{Inst\342ncia c20100}{subsection.9.1}% 43
+\BOOKMARK [3][-]{subsubsection.9.1.12}{Inst\342ncia c20200}{subsection.9.1}% 44
+\BOOKMARK [3][-]{subsubsection.9.1.13}{Inst\342ncia e05100}{subsection.9.1}% 45
+\BOOKMARK [3][-]{subsubsection.9.1.14}{Inst\342ncia e05200}{subsection.9.1}% 46
+\BOOKMARK [3][-]{subsubsection.9.1.15}{Inst\342ncia e10100}{subsection.9.1}% 47
+\BOOKMARK [3][-]{subsubsection.9.1.16}{Inst\342ncia e10200}{subsection.9.1}% 48
+\BOOKMARK [3][-]{subsubsection.9.1.17}{Inst\342ncia e20100}{subsection.9.1}% 49
+\BOOKMARK [3][-]{subsubsection.9.1.18}{Inst\342ncia e20200}{subsection.9.1}% 50
+\BOOKMARK [2][-]{subsection.9.2}{Estudo Estat\355sticos}{section.9}% 51
+\BOOKMARK [1][-]{section.10}{Coment\341rios Finais}{}% 52
+\BOOKMARK [1][-]{section.11}{C\363digo dos Algoritmos}{}% 53
+\BOOKMARK [2][-]{subsection.11.1}{Shell Script}{section.11}% 54
+\BOOKMARK [2][-]{subsection.11.2}{C\363digos em R}{section.11}% 55
+\BOOKMARK [3][-]{subsubsection.11.2.1}{Procedimento Estat\355stico}{subsection.11.2}% 56
+\BOOKMARK [3][-]{subsubsection.11.2.2}{Gr\341ficos}{subsection.11.2}% 57
+\BOOKMARK [2][-]{subsection.11.3}{C\363digos em C}{section.11}% 58
+\BOOKMARK [3][-]{subsubsection.11.3.1}{gap.h}{subsection.11.3}% 59
+\BOOKMARK [3][-]{subsubsection.11.3.2}{gap.c}{subsection.11.3}% 60
+\BOOKMARK [3][-]{subsubsection.11.3.3}{Algoritmo Gen\351tico}{subsection.11.3}% 61
+\BOOKMARK [3][-]{subsubsection.11.3.4}{Algoritmo Recozimento Simulado}{subsection.11.3}% 62
+\BOOKMARK [3][-]{subsubsection.11.3.5}{M\351todo Rein\355cio}{subsection.11.3}% 63
+\BOOKMARK [3][-]{subsubsection.11.3.6}{Algoritmo GRASP}{subsection.11.3}% 64
+\BOOKMARK [1][-]{section.12}{Anexos}{}% 65

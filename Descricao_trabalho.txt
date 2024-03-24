@@ -1,0 +1,40 @@
+Problema da Alocação Generalizada PAG
+   Implementar heurísiticas para este problema
+
+   Implementar o máximo de métodos herísticos bons
+
+
+Dados do problema
+   n:     quantidade de tarefas
+   m:     quantidade de agentes
+   ci:    capacidade do agente i
+   rji:   quantidade de recursos que a tarefa j consome quando processada pelo agente i
+   dji:   custo da tarefa j alocada no agente i
+
+
+Decisão
+        1 se a tarefa j é processada pelo agente i
+   xij: 0 caso contrário
+
+   min: sumj sumi djixji
+
+   sujeito a
+      sum j rijxij <= ci   para todo i
+      sum i xji     = 1    para todo i
+
+
+Métodos
+   Método de reinício:
+      1 - Gera uma solução aleatória S
+      2 - Pesquisa em uma vizinhança N(S) por uma solução melhor.
+         Se a melhor solução S' pertencente a N(S) é melhor do que S, então S = S', volte para passo 2.
+      3 - Atualize a melhor solução encontrada até o momento (Solução inculbente)
+      4 - Se houver tempo, volta para passo 1.
+
+   Algoritmo Genético
+      1 - Inicialize, de modo aleatório, uma população P com n soluções geradas aleatoriamente
+      2 - Para cada solução x pertencente  a P, calcule a métrica de qualidade F(x)
+      3 - (Torneio) Selecione de modo aleatório tendencioso, c  soluções para realiar operações de recombinação
+      4 - Para cada decisão de cada solução x pertecente a P, sorteie com probabilidade m a decisão de modificar aleatoriamente
+      5 - De modo aleatorio tendencioso, selecione r soluções para remover de P
+      6 - Se houver tempo, vá para passo 2.

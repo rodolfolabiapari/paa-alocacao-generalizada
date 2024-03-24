@@ -1,0 +1,38 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefault{k+kt}{double} \PYGdefault{n+nf}{Avalia\PYGdefaultZus{}Solucao}\PYGdefault{p}{(}\PYGdefault{n}{Solucao} \PYGdefault{o}{*} \PYGdefault{n}{sol}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+	\PYGdefault{k+kt}{int} \PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{,} \PYGdefault{n}{capacidade\PYGdefaultZus{}agentes}\PYGdefault{p}{[}\PYGdefault{n}{QUANT\PYGdefaultZus{}AGENTES}\PYGdefault{p}{],} \PYGdefault{n}{sum\PYGdefaultZus{}recursos} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+	\PYGdefault{k+kt}{double} \PYGdefault{n}{custo} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;} \PYGdefault{k+kt}{char} \PYGdefault{n}{solucao\PYGdefaultZus{}invalida} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+
+	\PYGdefault{c+c1}{// Define a capacidade inicial utilizada de cada agente com 0}
+	\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;} \PYGdefault{n}{i} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{QUANT\PYGdefaultZus{}AGENTES}\PYGdefault{p}{;} \PYGdefault{n}{i}\PYGdefault{o}{++}\PYGdefault{p}{)}
+		\PYGdefault{n}{capacidade\PYGdefaultZus{}agentes}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+
+	\PYGdefault{c+c1}{// Realiza os cálculos de custo e capacidade}
+	\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;} \PYGdefault{n}{i} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{QUANT\PYGdefaultZus{}TAREFAS}\PYGdefault{p}{;} \PYGdefault{n}{i}\PYGdefault{o}{++}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+		\PYGdefault{n}{custo} \PYGdefault{o}{+=} \PYGdefault{n}{CUSTO\PYGdefaultZus{}A\PYGdefaultZus{}T}\PYGdefault{p}{[}\PYGdefault{n}{sol}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]][}\PYGdefault{n}{i}\PYGdefault{p}{];}
+		\PYGdefault{n}{capacidade\PYGdefaultZus{}agentes}\PYGdefault{p}{[}\PYGdefault{n}{sol}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]]} \PYGdefault{o}{+=} \PYGdefault{n}{RECURSOS\PYGdefaultZus{}A\PYGdefaultZus{}T}\PYGdefault{p}{[}\PYGdefault{n}{sol}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]][}\PYGdefault{n}{i}\PYGdefault{p}{];}
+	\PYGdefault{p}{\PYGdefaultZcb{}}
+
+	\PYGdefault{c+c1}{// Verifica se algum agente passou sua capacidade máxima}
+	\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;} \PYGdefault{n}{i} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{QUANT\PYGdefaultZus{}AGENTES}\PYGdefault{p}{;} \PYGdefault{n}{i}\PYGdefault{o}{++}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+		\PYGdefault{n}{sol}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{excesso}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{n}{capacidade\PYGdefaultZus{}agentes}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{];}
+		\PYGdefault{n}{sum\PYGdefaultZus{}recursos} \PYGdefault{o}{+=} \PYGdefault{n}{capacidade\PYGdefaultZus{}agentes}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{];}
+
+		\PYGdefault{c+c1}{// Se sim define esta solução como inválida}
+		\PYGdefault{k}{if} \PYGdefault{p}{(}\PYGdefault{n}{capacidade\PYGdefaultZus{}agentes}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]} \PYGdefault{o}{\PYGdefaultZgt{}} \PYGdefault{n}{CAPAC\PYGdefaultZus{}AGENTES}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{])}
+			\PYGdefault{n}{solucao\PYGdefaultZus{}invalida} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{1}\PYGdefault{p}{;}
+	\PYGdefault{p}{\PYGdefaultZcb{}}
+
+	\PYGdefault{n}{sol}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{custo} \PYGdefault{o}{=} \PYGdefault{n}{custo}\PYGdefault{p}{;}
+
+	\PYGdefault{c+c1}{// Caso a solução foi excedida, altera a avaliação do indivíduo tornando\PYGdefaultZhy{}o}
+		\PYGdefault{c+c1}{// pior.}
+	\PYGdefault{k}{if} \PYGdefault{p}{(}\PYGdefault{n}{solucao\PYGdefaultZus{}invalida}\PYGdefault{p}{)}
+		\PYGdefault{n}{sol}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{avaliacao} \PYGdefault{o}{=} \PYGdefault{p}{((}\PYGdefault{k+kt}{double}\PYGdefault{p}{)} \PYGdefault{n}{sum\PYGdefaultZus{}recursos} \PYGdefault{p}{)} \PYGdefault{o}{*} \PYGdefault{l+m+mi}{1000000}\PYGdefault{p}{;}
+	\PYGdefault{k}{else} \PYGdefault{p}{\PYGdefaultZob{}}
+		\PYGdefault{n}{sol}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{avaliacao} \PYGdefault{o}{=} \PYGdefault{p}{((}\PYGdefault{k+kt}{double}\PYGdefault{p}{)} \PYGdefault{n}{custo}\PYGdefault{p}{);}
+	\PYGdefault{p}{\PYGdefaultZcb{}}
+
+	\PYGdefault{k}{return} \PYGdefault{n}{sol}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{avaliacao}\PYGdefault{p}{;}
+\PYGdefault{p}{\PYGdefaultZcb{}}
+\end{Verbatim}

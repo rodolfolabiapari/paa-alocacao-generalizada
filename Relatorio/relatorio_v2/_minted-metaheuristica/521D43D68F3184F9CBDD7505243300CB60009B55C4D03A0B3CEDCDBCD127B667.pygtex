@@ -1,0 +1,66 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefault{c+ch}{\PYGdefaultZsh{}!/bin/bash}
+
+\PYGdefault{n+nb}{eval} \PYGdefault{l+s+s2}{\PYGdefaultZdq{}gcc \PYGdefaultZhy{}Ofast gap.c GAP\PYGdefaultZhy{}Genetic.c \PYGdefaultZhy{}o GAP\PYGdefaultZhy{}Genetic.o\PYGdefaultZdq{}}
+\PYGdefault{n+nb}{eval} \PYGdefault{l+s+s2}{\PYGdefaultZdq{}gcc \PYGdefaultZhy{}Ofast gap.c GAP\PYGdefaultZhy{}GRASP.c   \PYGdefaultZhy{}o GAP\PYGdefaultZhy{}GRASP.o\PYGdefaultZdq{}}
+\PYGdefault{n+nb}{eval} \PYGdefault{l+s+s2}{\PYGdefaultZdq{}gcc \PYGdefaultZhy{}Ofast gap.c GAP\PYGdefaultZhy{}Greedy.c  \PYGdefaultZhy{}o GAP\PYGdefaultZhy{}Greedy.o\PYGdefaultZdq{}}
+\PYGdefault{n+nb}{eval} \PYGdefault{l+s+s2}{\PYGdefaultZdq{}gcc \PYGdefaultZhy{}Ofast gap.c GAP\PYGdefaultZhy{}SA.c      \PYGdefaultZhy{}o GAP\PYGdefaultZhy{}SA.o\PYGdefaultZdq{}}
+
+\PYGdefault{n+nv}{instancias}\PYGdefault{o}{=(}
+  ../Instancias/gap\PYGdefaultZus{}a/a05100
+  ../Instancias/gap\PYGdefaultZus{}a/a05200
+  ../Instancias/gap\PYGdefaultZus{}a/a10100
+  ../Instancias/gap\PYGdefaultZus{}a/a10200
+  ../Instancias/gap\PYGdefaultZus{}a/a20100
+  ../Instancias/gap\PYGdefaultZus{}a/a20200
+
+  ../Instancias/gap\PYGdefaultZus{}c/c05100
+  ../Instancias/gap\PYGdefaultZus{}c/c05200
+  ../Instancias/gap\PYGdefaultZus{}c/c10100
+  ../Instancias/gap\PYGdefaultZus{}c/c10200
+  ../Instancias/gap\PYGdefaultZus{}c/c20100
+  ../Instancias/gap\PYGdefaultZus{}c/c20200
+
+  ../Instancias/gap\PYGdefaultZus{}e/e05100
+  ../Instancias/gap\PYGdefaultZus{}e/e05200
+  ../Instancias/gap\PYGdefaultZus{}e/e10100
+  ../Instancias/gap\PYGdefaultZus{}e/e10200
+  ../Instancias/gap\PYGdefaultZus{}e/e20100
+  ../Instancias/gap\PYGdefaultZus{}e/e20200
+  \PYGdefault{o}{)}
+
+\PYGdefault{n+nv}{algoritmos}\PYGdefault{o}{=(} GAP\PYGdefaultZhy{}Genetic.o GAP\PYGdefaultZhy{}GRASP.o GAP\PYGdefaultZhy{}Greedy.o GAP\PYGdefaultZhy{}SA.o \PYGdefault{o}{)}
+
+\PYGdefault{n+nv}{configuracoes}\PYGdefault{o}{=(} p\PYGdefaultZus{}ga.txt p\PYGdefaultZus{}grasp.txt p\PYGdefaultZus{}greedy.txt p\PYGdefaultZus{}sa.txt \PYGdefault{o}{)}
+
+\PYGdefault{n+nb}{echo} \PYGdefault{l+s+s2}{\PYGdefaultZdq{}Quantas iteracoes?\PYGdefaultZdq{}}
+\PYGdefault{n+nb}{read} quantidade\PYGdefaultZus{}iteracoes\PYGdefault{p}{;}
+\PYGdefault{n+nb}{echo}
+
+
+\PYGdefault{k}{for} indice\PYGdefaultZus{}algoritmo in \PYGdefault{l+s+s2}{\PYGdefaultZdq{}}\PYGdefault{l+s+si}{\PYGdefaultZdl{}\PYGdefaultZob{}}\PYGdefault{p}{!algoritmos[@]}\PYGdefault{l+s+si}{\PYGdefaultZcb{}}\PYGdefault{l+s+s2}{\PYGdefaultZdq{}}
+\PYGdefault{k}{do}
+	\PYGdefault{n+nb}{echo} \PYGdefault{n+nv}{\PYGdefaultZdl{}indice\PYGdefaultZus{}algoritmo}
+
+  \PYGdefault{k}{for} instancia in \PYGdefault{l+s+s2}{\PYGdefaultZdq{}}\PYGdefault{l+s+si}{\PYGdefaultZdl{}\PYGdefaultZob{}}\PYGdefault{n+nv}{instancias}\PYGdefault{p}{[@]}\PYGdefault{l+s+si}{\PYGdefaultZcb{}}\PYGdefault{l+s+s2}{\PYGdefaultZdq{}}
+  \PYGdefault{k}{do}
+  	\PYGdefault{n+nb}{echo} \PYGdefault{n+nv}{\PYGdefaultZdl{}instancia}
+
+    \PYGdefault{k}{for} \PYGdefault{o}{((} \PYGdefault{n+nv}{i} \PYGdefault{o}{=} 0\PYGdefault{p}{;} i \PYGdefaultZlt{} \PYGdefault{l+s+s2}{\PYGdefaultZdq{}}\PYGdefault{n+nv}{\PYGdefaultZdl{}quantidade\PYGdefaultZus{}iteracoes}\PYGdefault{l+s+s2}{\PYGdefaultZdq{}}\PYGdefault{p}{;} i++ \PYGdefault{o}{))}\PYGdefault{p}{;} \PYGdefault{k}{do}
+      \PYGdefault{n+nb}{echo} \PYGdefault{l+s+s2}{\PYGdefaultZdq{}}\PYGdefault{n+nv}{\PYGdefaultZdl{}i}\PYGdefault{l+s+s2}{\PYGdefaultZdq{}}
+
+      \PYGdefault{n+nv}{cmd}\PYGdefault{o}{=}\PYGdefault{l+s+s2}{\PYGdefaultZdq{}./}\PYGdefault{l+s+si}{\PYGdefaultZdl{}\PYGdefaultZob{}}\PYGdefault{n+nv}{algoritmos}\PYGdefault{p}{[}\PYGdefault{n+nv}{\PYGdefaultZdl{}indice\PYGdefaultZus{}algoritmo}\PYGdefault{p}{]}\PYGdefault{l+s+si}{\PYGdefaultZcb{}}\PYGdefault{l+s+s2}{ }\PYGdefault{l+s+si}{\PYGdefaultZdl{}\PYGdefaultZob{}}\PYGdefault{n+nv}{configuracoes}\PYGdefault{p}{[}\PYGdefault{n+nv}{\PYGdefaultZdl{}indice\PYGdefaultZus{}algoritmo}\PYGdefault{p}{]}\PYGdefault{l+s+si}{\PYGdefaultZcb{}}\PYGdefault{l+s+s2}{ }\PYGdefault{n+nv}{\PYGdefaultZdl{}instancia}\PYGdefault{l+s+s2}{ }\PYGdefault{n+nv}{\PYGdefaultZdl{}i}\PYGdefault{l+s+s2}{\PYGdefaultZdq{}}
+      date
+      \PYGdefault{n+nb}{echo} \PYGdefault{n+nv}{\PYGdefaultZdl{}cmd}
+      \PYGdefault{n+nv}{\PYGdefaultZdl{}cmd}
+      \PYGdefault{n+nb}{echo}
+      \PYGdefault{n+nb}{echo} \PYGdefault{l+s+s2}{\PYGdefaultZdq{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZhy{}\PYGdefaultZdq{}}
+      \PYGdefault{n+nb}{echo}
+    \PYGdefault{k}{done}
+    \PYGdefault{n+nb}{echo}
+
+  \PYGdefault{k}{done}
+  \PYGdefault{n+nb}{echo}
+
+\PYGdefault{k}{done}
+\end{Verbatim}

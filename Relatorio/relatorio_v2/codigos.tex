@@ -1,0 +1,1763 @@
+
+\section{Código dos Algoritmos}
+	Os algoritmos \textit{shell}, Algoritmo Genético, Recozimento Simulado, Método Reinício e GRASP, utilizados no trabalho, estão situados nas páginas \pageref{cod:shell}, \pageref{cod:ga}, \pageref{cod:sa}, \pageref{cod:greedy}, \pageref{cod:grasp}, respectivamente.
+	
+	\subsection{\textit{Shell Script}} \label{cod:shell}
+
+\begin{minted} [ frame=lines, framesep=2mm, tabsize=3, breaklines=true, baselinestretch=1.2, linenos, fontsize=\footnotesize ]{shell}
+#!/bin/bash
+
+eval "gcc -Ofast gap.c GAP-Genetic.c -o GAP-Genetic.o"
+eval "gcc -Ofast gap.c GAP-GRASP.c   -o GAP-GRASP.o"
+eval "gcc -Ofast gap.c GAP-Greedy.c  -o GAP-Greedy.o"
+eval "gcc -Ofast gap.c GAP-SA.c      -o GAP-SA.o"
+
+instancias=( 
+  ../Instancias/gap_a/a05100
+  ../Instancias/gap_a/a05200
+  ../Instancias/gap_a/a10100
+  ../Instancias/gap_a/a10200
+  ../Instancias/gap_a/a20100
+  ../Instancias/gap_a/a20200
+
+  ../Instancias/gap_c/c05100
+  ../Instancias/gap_c/c05200
+  ../Instancias/gap_c/c10100
+  ../Instancias/gap_c/c10200
+  ../Instancias/gap_c/c20100
+  ../Instancias/gap_c/c20200
+
+  ../Instancias/gap_e/e05100
+  ../Instancias/gap_e/e05200
+  ../Instancias/gap_e/e10100
+  ../Instancias/gap_e/e10200
+  ../Instancias/gap_e/e20100
+  ../Instancias/gap_e/e20200
+  )
+
+algoritmos=( GAP-Genetic.o GAP-GRASP.o GAP-Greedy.o GAP-SA.o )
+
+configuracoes=( p_ga.txt p_grasp.txt p_greedy.txt p_sa.txt )
+
+echo "Quantas iteracoes?"
+read quantidade_iteracoes;
+echo
+
+
+for indice_algoritmo in "${!algoritmos[@]}"
+do
+	echo $indice_algoritmo
+
+  for instancia in "${instancias[@]}"
+  do
+  	echo $instancia
+
+    for (( i = 0; i < "$quantidade_iteracoes"; i++ )); do
+      echo "$i"
+
+      cmd="./${algoritmos[$indice_algoritmo]} ${configuracoes[$indice_algoritmo]} $instancia $i"
+      date
+      echo $cmd
+      $cmd
+      echo
+      echo "-------------------------------------------------------------"
+      echo
+    done
+    echo
+
+  done
+  echo
+
+done
+
+
+\end{minted}
+
+	\subsection{Códigos em \textit{R}}
+		\subsubsection{Procedimento Estatístico}
+		
+		\begin{minted} [ frame=lines, framesep=2mm, tabsize=3, breaklines=true, baselinestretch=1.2, linenos, fontsize=\footnotesize ]{r}
+
+GeraDados <- function(diretorio) {
+  arq_gen <- read.table(diretorio)
+  vet_gen <- rep(arq_gen$V1);
+  
+  desloca <- 1;
+  cat("\tMin. 1st Qu.  Median    Mean 3rd Qu.    Max.\n")
+    
+  
+  
+  otimo <- c(1698   ,
+             1360   ,
+             1158   ,
+             3235   ,
+             2623   ,
+             2339   ,
+             1931  ,
+             1402  ,
+             1243  ,
+             3456  ,
+             2806  ,
+             2391  ,
+             12673,
+             11568,
+             8431 ,
+             24927,
+             23302,
+             22377)
+  
+  # 3 * 6 arquivos (a, c, d)
+  for (j in 1:18) {
+    cat(j, "\t");
+    vetor_buffer <- vet_gen[desloca:(desloca + 9)];
+    cat(summary(vetor_buffer), "\t\t")
+    
+    cat(sd(vetor_buffer))
+    cat("\n")
+    
+    desloca = desloca + 10;
+  }
+  desloca = 1;
+  for (j in 1:18) {
+    #cat(j, "\t");
+    vetor_buffer <- vet_gen[desloca:(desloca + 9)];
+    cat(100 * (otimo[j] / min(vetor_buffer)))
+    cat("\n")
+    
+    desloca = desloca + 10;
+  }
+  
+}
+
+GeraDados("out_genetico.txt")
+GeraDados("out_simulated_annealing.txt")
+GeraDados("out_reinicio.txt")
+GeraDados("out_grasp.txt")
+
+		\end{minted}
+		
+		\subsubsection{Gráficos}
+		
+		\begin{minted} [ frame=lines, framesep=2mm, tabsize=3, breaklines=true, baselinestretch=1.2, linenos, fontsize=\footnotesize ]{r}
+otimo <- c(1698   ,
+           1360   ,
+           1158   ,
+           3235   ,
+           2623   ,
+           2339   ,
+           1931  ,
+           1402  ,
+           1243  ,
+           3456  ,
+           2806  ,
+           2391  ,
+           12673,
+           11568,
+           8431 ,
+           24927,
+           23302,
+           22377)
+GeraDados <- function(d_ga, d_sa, d_r, d_gr) {
+  arq_ga <- read.table(d_ga)
+  arq_sa <- read.table(d_sa)
+  arq_r <- read.table(d_r )
+  arq_gr <- read.table(d_gr)
+  
+  ga <- rep(arq_ga$V1);
+  sa <- rep(arq_sa$V1);
+  r  <- rep(arq_r$V1);
+  gr <- rep(arq_gr$V1);
+  
+  desloca <- 1;
+  
+  
+  for (j in 1:18) {
+    #png(paste(d_ga, "_", j, ".png", sep=""), width = 840, height = 480, units = "px");
+    png(paste(j, ".png", sep=""), width = 840, height = 480, units = "px");
+    
+    boxplot(ga[desloca:(desloca + 9)], 
+            sa[desloca:(desloca + 9)], 
+            r[desloca:(desloca + 9)], 
+            gr[desloca:(desloca + 9)],
+            ylim = c(otimo[j] - 1, 
+                     max(max(ga[desloca:(desloca + 9)]), max(sa[desloca:(desloca + 9)]), max(r[desloca:(desloca + 9)]), max(gr[desloca:(desloca + 9)])) + 1),
+            main = paste("Instância ", j, sep = ""),
+            xlab = "Algoritmos",
+            ylab = "Custo", 
+            col = "orange",
+            border = "brown",
+            names = c("Genético", "Simulated Annealing", "Reinício", "GRASP"));
+    abline(h = otimo[j], col = "blue");
+    
+    dev.off()
+    
+    desloca = desloca + 10;
+  }
+}
+
+GeraDados("out_genetico.txt", "out_simulated_annealing.txt", "out_reinicio.txt", "out_grasp.txt")
+
+		\end{minted}
+
+	\subsection{Códigos em \textit{C}}
+
+	\subsubsection{\textit{gap.h}} \label{cod:mod}
+
+		\begin{minted} [ frame=lines, framesep=2mm, tabsize=3, breaklines=true, baselinestretch=1.2, linenos, fontsize=\footnotesize ]{c}
+
+/*
+ * Trabalho de Projeto e Análise de Algoritmo
+ * Período 16.1
+ * 
+ * Desenvolver Metaheurísticas para o Problema de Alocação Generalizada
+ * 
+ * Funções Genéricas do Problam GAP.
+ * Data: 01/08/2016.
+ * Distribuição Livre, desde que referenciando o autor.
+ * 
+ * Professor: Haroldo Santos
+ * 
+ * Autor do Trabalho: Rodolfo Labiapari Mansur Guimarães
+ */
+
+#include <time.h>
+
+/*
+ * Estrutura de dados para armazenamento das informações de conjunto de 
+ *	soluções.
+ * 
+ * excesso - valor com a capacidade atual de cada agente desta solução
+ * tarefas - Vetor com tamanho Tarefas onde cada endereço é indicado o agente
+ *	responsável por tal
+ * avaliação - Valor fitness da solução (sum_excesso + custo) * penalidade
+ * custo - custo total desta solução
+ */
+typedef struct Struct_Solucao {
+	int * excesso;
+	int * tarefas;
+	double avaliacao;
+	double custo;
+} Solucao;
+
+int QUANT_TAREFAS   ; // Quantidade de tarefas
+int QUANT_AGENTES   ; // Quantidade de agentes
+int * CAPAC_AGENTES ; // Vetor com capacidade máxima de cada gente.
+int ** RECURSOS_A_T ; // Matriz de recursos[a,t]
+int ** CUSTO_A_T    ; // Matriz de custo [a,t]
+
+
+int    TAM_POP    ; // Tamanho da população do algoritmo
+int    ITERACOES  ; // Quantidade de iterações
+float  TAX_CRUZAM ; // Porcentagem de cruzamentos a serem realizados
+float  TAX_MUT    ; // Porcentagem dos dados do filho que serão mutados
+
+char IMPRIMIR ; // Variável que permite impressão na tela.
+int SECONDS   ; // Tempo lido pelo arquivo de configuração
+int MAXIteracoes ; // Quantidade de iterações daquela temperatura
+FILE * out    ; // Arquivo para gravação de dados permanente
+time_t endwait, start; // Variáveis de tempo para cálculo do intervalo de 
+	//tempo de execução
+
+double Avalia_Solucao(Solucao * sol) ;
+void Gera_Vizinho(Solucao * atual, Solucao ** proxima) ;
+Solucao * Instancia_Solucao() ;
+void Gera_Solucao_Aleatoria(Solucao ** s) ;
+char Teste_Aceita_Nova_Solucao(double temp, Solucao ** atual, Solucao * proxima) ;
+void Aceita_Nova_Solucao(Solucao ** atual, Solucao * proxima) ;
+void Le_Instancia(char * path) ;
+void Imprime_Solucao(Solucao * ind) ;
+void Imprime_Status(double t, Solucao * m) ;
+void Desaloca_Solucao(Solucao ** p) ;
+Solucao * Instancia_Solucao_Aleatoria() ;
+void Desaloca_Populacao(Solucao *** p) ;
+void Imprime_Instancia() ;
+		\end{minted}
+
+
+	\subsubsection{\textit{gap.c}}
+		\begin{minted} [ frame=lines, framesep=2mm, tabsize=3, breaklines=true, baselinestretch=1.2, linenos, fontsize=\footnotesize ]{c}
+
+/*
+ * Trabalho de Projeto e Análise de Algoritmo
+ * Período 16.1
+ * 
+ * Desenvolver Metaheurísticas para o Problema de Alocação Generalizada
+ * 
+ * Funções Genéricas do Problam GAP.
+ * Data: 01/08/2016.
+ * Distribuição Livre, desde que referenciando o autor.
+ * 
+ * Professor: Haroldo Santos
+ * 
+ * Autor do Trabalho: Rodolfo Labiapari Mansur Guimarães
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <limits.h>
+#include "gap.h"
+
+
+/*
+ * Procedimento que avalia a solução atual.
+ * 
+ * Se a solução é factível, retorna seu custo real.
+ * Se infactível retorna o custo encontrado * 1000000
+ */
+double Avalia_Solucao(Solucao * sol) {
+	int i = 0, capacidade_agentes[QUANT_AGENTES], sum_recursos = 0;
+	double custo = 0; char solucao_invalida = 0;
+	
+	// Define a capacidade inicial utilizada de cada agente com 0
+	for (i = 0; i < QUANT_AGENTES; i++)
+		capacidade_agentes[i] = 0;
+
+	// Realiza os cálculos de custo e capacidade
+	for (i = 0; i < QUANT_TAREFAS; i++) {
+		custo += CUSTO_A_T[sol->tarefas[i]][i];
+		capacidade_agentes[sol->tarefas[i]] += RECURSOS_A_T[sol->tarefas[i]][i];
+	}
+
+	// Verifica se algum agente passou sua capacidade máxima
+	for (i = 0; i < QUANT_AGENTES; i++) {
+		sol->excesso[i] = capacidade_agentes[i];
+		sum_recursos += capacidade_agentes[i];
+	
+		// Se sim define esta solução como inválida
+		if (capacidade_agentes[i] > CAPAC_AGENTES[i])
+			solucao_invalida = 1;
+	}
+	
+	sol->custo = custo;
+	
+	// Caso a solução foi excedida, altera a avaliação do indivíduo tornando-o
+		// pior.
+	if (solucao_invalida) 
+		sol->avaliacao = ((double) sum_recursos ) * 1000000;
+	else {
+		sol->avaliacao = ((double) custo);
+	}
+	
+	return sol->avaliacao;
+}
+
+
+
+/*
+ * Procedimento de geração de indivíduos por meio do procedimento shift. 
+ * 
+ * Um detalhe a se atentar é que é realizado shift em somente 1 tarefa da 
+ *	solução.
+ */
+void Gera_Vizinho(Solucao * atual, Solucao ** proxima) {
+	int i = 0, j = 0, agente_atual = 0, agente_novo = 0, 
+	tarefa_escolhida1 = 0, sum_recursos = 0, 
+	quant_alteracoes = 0;
+	char solucao_invalida = 0;
+	
+	// Copia os valores do atual
+	for (i = 0; i < QUANT_TAREFAS; i++) {
+		(*proxima)->tarefas[i] = atual->tarefas[i];
+		if (i < QUANT_AGENTES)
+			(*proxima)->excesso[i] = atual->excesso[i];
+	}
+
+	(*proxima)->custo = atual->custo;
+
+	
+	// Define uma quantidade de alterações pra gerar o vizinho
+	quant_alteracoes = 2;
+	
+	// Altera o indivíduo
+	for (i = 0; i < quant_alteracoes; i++) {
+
+		// Escolhe a tarefa que será alterada
+		tarefa_escolhida1 = random() % QUANT_TAREFAS;
+		agente_atual = (*proxima)->tarefas[tarefa_escolhida1]; 
+
+		// Gera um novo agente pra ela e certifica que ele é diferente do anterior.
+		do {
+			agente_novo = random() % QUANT_AGENTES;
+		} while (agente_novo == agente_atual);
+
+		// Atribui o novo agente à tarefa
+		(*proxima)->tarefas[tarefa_escolhida1] = agente_novo;
+
+		// Procedimento Otimizado:
+			// A cada alteração, realiza-se a alteração dos valores da nova geração.
+			// Como este novo vizinho não é feito do zero e sim sobre cópia de um anterior,
+			// basta alterar os valores herdados do seu anterior, atualiando em O(1)
+
+		// Sendo assim, atualiza o excesso de cada agente
+			// Retira recurso do agente que ficou livre
+		(*proxima)->excesso[agente_atual] -= RECURSOS_A_T[agente_atual][tarefa_escolhida1];
+			// Acrescenta recurso do agente que recebeu a tarefa atual
+		(*proxima)->excesso[agente_novo ] += RECURSOS_A_T[agente_novo ][tarefa_escolhida1]; 
+
+		// Calcula o custo atual desta solução
+		(*proxima)->custo += CUSTO_A_T[agente_novo ][tarefa_escolhida1] - CUSTO_A_T[agente_atual][tarefa_escolhida1];
+	}
+
+	// Verifica se a solução gerada é válida
+	for (j = 0; j < QUANT_AGENTES; j++) {
+		sum_recursos += (*proxima)->excesso[j];
+
+		if ((*proxima)->excesso[j] > CAPAC_AGENTES[j]) {
+			solucao_invalida = 1;
+		}
+	}
+
+	// Calcula o fator avaliação 
+	if (solucao_invalida) 
+		(*proxima)->avaliacao = ((double) sum_recursos ) * 1000000;
+	else {
+		(*proxima)->avaliacao = ((double)  (*proxima)->custo);
+	}
+}
+
+
+
+/*
+ * Procedimento que instancia uma nova solução com seus valores totalmente 
+ *	aleatórios.
+ */
+Solucao * Instancia_Solucao() {
+	Solucao * s;
+	
+	s = calloc(1, sizeof(Solucao));
+	
+	s->tarefas = calloc(QUANT_TAREFAS, sizeof(int));
+	s->excesso = calloc(QUANT_AGENTES, sizeof(int));
+	
+	// Defini-o como uma solução inicial ruim
+	s->avaliacao = INT_MAX;
+	s->avaliacao = INT_MAX;
+	
+	// Retorna a solução
+	return s;
+}
+
+
+/*
+ * Procedimento que instancia uma nova solução com seus valores totalmente 
+ *	aleatórios.
+ */
+void Gera_Solucao_Aleatoria(Solucao ** s) {
+	int i;
+	
+	for (i = 0; i < QUANT_TAREFAS; i++) {
+		(*s)->tarefas[i] = random() % QUANT_AGENTES;
+	}
+	
+	Avalia_Solucao(*s);
+}
+
+
+/*
+ * Procedimento que copia as informações de uma solução para a outra de forma
+ *	a aceitar aquela solução.
+ */
+char Teste_Aceita_Nova_Solucao(double temp, Solucao ** atual, Solucao * proxima) {
+	int i;
+	
+	// Verifica se a solução atual é melhor que a atual.
+	if ((*atual)->avaliacao > 2 * 1000000 || 
+				((proxima->avaliacao < 2 * 1000000) && 
+				(proxima->custo < (*atual)->custo))) {
+		
+		//Imprime_Status(temp, *atual);
+
+		// Copia a solução
+		for (i = 0; i < QUANT_TAREFAS; i++) {
+			(*atual)->tarefas[i] = proxima->tarefas[i];
+			if (i < QUANT_AGENTES)
+				(*atual)->excesso[i] = proxima->excesso[i];
+		}
+
+		(*atual)->avaliacao = proxima->avaliacao;
+		(*atual)->custo     = proxima->custo;
+	
+		// Retorna true se tiver aceitado.		
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
+
+/*
+ * Procedimento que copia as informações de uma solução para a outra de forma
+ *	a aceitar aquela solução.
+ */
+void Aceita_Nova_Solucao(Solucao ** atual, Solucao * proxima) {
+	int i = 0;
+	
+	// Copia a solução 
+	for (i = 0; i < QUANT_TAREFAS; i++) {
+		(*atual)->tarefas[i] = proxima->tarefas[i];
+		if (i < QUANT_AGENTES)
+			(*atual)->excesso[i] = proxima->excesso[i];
+	}
+
+	(*atual)->avaliacao = proxima->avaliacao;
+	(*atual)->custo     = proxima->custo;
+}
+
+
+
+
+/*
+ * Procedimento que realiza a leitura da instância problema.
+ */
+void Le_Instancia(char * path) {
+	int i, j;
+	FILE * f = fopen(path, "r");
+
+	if (f) {
+		fscanf(f, "%d", &QUANT_AGENTES);
+		fscanf(f, "%d", &QUANT_TAREFAS);
+
+		if (QUANT_AGENTES < 1 || QUANT_TAREFAS < 1) {
+			printf("Valores da Instância Negativos!");
+			exit(2);
+		}
+
+		CAPAC_AGENTES = calloc(QUANT_AGENTES, sizeof (int));
+
+		RECURSOS_A_T = calloc(QUANT_AGENTES, sizeof (int*));
+		CUSTO_A_T = calloc(QUANT_AGENTES, sizeof (int*));
+
+		for (i = 0; i < QUANT_AGENTES; i++) {
+			RECURSOS_A_T[i] = calloc(QUANT_TAREFAS, sizeof (int));
+			CUSTO_A_T[i] = calloc(QUANT_TAREFAS, sizeof (int));
+		}
+
+		for (i = 0; i < QUANT_AGENTES; i++) {
+			for (j = 0; j < QUANT_TAREFAS; j++) {
+				fscanf(f, "%d", &CUSTO_A_T[i][j]);
+			}
+		}
+
+		for (i = 0; i < QUANT_AGENTES; i++) {
+			for (j = 0; j < QUANT_TAREFAS; j++) {
+				fscanf(f, "%d", &RECURSOS_A_T[i][j]);
+			}
+		}
+
+		for (i = 0; i < QUANT_AGENTES; i++)
+			fscanf(f, "%d", &CAPAC_AGENTES[i]);
+		
+		fclose(f);
+
+	} else {
+		printf("Erro ao ler Instância!\n");
+		exit(-2);
+	}
+
+}
+
+
+
+
+/*
+ * Procedimento que informa o resultado obtido.
+ */
+void Imprime_Solucao(Solucao * ind) {
+	
+	fprintf(out, "\n\t%10lf\t", ind->custo);
+	printf("\n\t%10lf\t", ind->custo);	
+	
+	/*for (i = 0; i < QUANT_TAREFAS; i++) {
+		fprintf(out, "%3d ", ind->tarefas[i]);
+		printf("%3d ", ind->tarefas[i]);
+	}*/
+}
+
+
+
+/*
+ * Procedimento de impressão do status atual da execução.
+ */
+void Imprime_Status(double t, Solucao * m) {
+	int i, sum = 0;
+	
+	for (i = 0; i < QUANT_AGENTES; i++)
+		sum += m->excesso[i];
+
+	//printf("I:%7d\t", it);
+	printf("T:%7.4lf\t", t);
+	printf("Best(c,a,sum):%9.0lf|%9.0lf|%d\t", m->custo, m->avaliacao, sum);
+	
+	//printf("AVA(c,a):At:%9.0lf|%9.0lf\tProx:%9.0lf|%9.0lf", a->custo, a->avaliacao, p->custo, p->avaliacao);
+	printf("\n");
+}
+
+
+
+/*
+ * Procedimento que instancia uma nova solução com seus valores totalmente 
+ *	aleatórios.
+ */
+Solucao * Instancia_Solucao_Aleatoria() {
+	int i;
+	Solucao * s;
+	
+	s = calloc(1, sizeof(Solucao));
+	
+	s->tarefas = calloc(QUANT_TAREFAS, sizeof(int));
+	s->excesso = calloc(QUANT_AGENTES, sizeof(int));
+	
+	for (i = 0; i < QUANT_TAREFAS; i++) {
+		s->tarefas[i] = random() % QUANT_AGENTES;
+	}
+	
+	Avalia_Solucao(s);
+	
+	return s;
+}
+
+
+
+/*
+ * Procedimento que libera a memória da solução utilizada.
+ */
+void Desaloca_Solucao(Solucao ** p) {
+	
+	free((*p)->tarefas);
+	free((*p)->excesso);
+	
+	free(*p);
+}
+
+
+
+/*
+ * Procedimento que realiza liberação de memória completa da população P
+ */
+void Desaloca_Populacao(Solucao *** p) {
+	int i = 0;
+	
+	// Desaloca uma população inteira
+	for (i = 0; i < TAM_POP; i++) {
+		if ((*p)[i] != NULL) {
+			free((*p)[i]->tarefas);
+			free((*p)[i]->excesso);
+		}
+	}
+	
+	free(*p);
+}
+
+
+
+/*
+ * Imprime a Instância lida
+ */
+void Imprime_Instancia() {
+	int i = 0, j;
+
+	printf("%d %d\n", QUANT_AGENTES, QUANT_TAREFAS);
+
+	for (i = 0; i < QUANT_AGENTES; i++) {
+		for (j = 0; j < QUANT_TAREFAS; j++) 
+			printf("%d ", CUSTO_A_T[i][j]);
+		printf("\n");
+	}
+	printf("\n");
+
+	for (i = 0; i < QUANT_AGENTES; i++) {
+		for (j = 0; j < QUANT_TAREFAS; j++) 
+			printf("%d ", RECURSOS_A_T[i][j]);
+		printf("\n");
+	}
+	
+	printf("\n");
+
+	for (i = 0; i < QUANT_AGENTES; i++)
+		printf("%d ", CAPAC_AGENTES[i]);
+
+	
+	printf("\n");
+}
+		\end{minted}
+
+	\subsubsection{Algoritmo Genético} \label{cod:ga}
+
+		\begin{minted} [ frame=lines, framesep=2mm, tabsize=3, breaklines=true, baselinestretch=1.2, linenos, fontsize=\footnotesize ]{c}
+/*
+ * Trabalho de Projeto e Análise de Algoritmo
+ * Período 16.1
+ * 
+ * Desenvolver Metaheurísticas para o Problema de Alocação Generalizada
+ * 
+ * Algoritmo: Genético.
+ * Data: 01/08/2016.
+ * Distribuição Livre, desde que referenciando o autor.
+ * 
+ * Professor: Haroldo Santos
+ * 
+ * Autor do Trabalho: Rodolfo Labiapari Mansur Guimarães
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include "gap.h"
+
+
+
+/*
+ * Procedimento que realiza a alocação de memória para novas instâncias.
+ * 
+ * O procedimento instancia a população, mas não os indivíduos.
+ */
+void Instancia_Populacoes(Solucao *** pop) {
+	(*pop) = calloc(TAM_POP, sizeof (Solucao*));
+}
+
+
+
+/*
+ * Procedimento que imprime os dados de toda a população.
+ */
+void Imprime_Populacao (Solucao ** p) {
+	int i = 0, j = 0;
+	if (IMPRIMIR) {
+		
+		printf("\n\n");
+
+		for (i = 0; i < TAM_POP; i++) {
+			printf("[%3d] - ", i);
+			if (p[i] != NULL) {
+				for (j = 0; j < QUANT_TAREFAS; j++) {
+					printf("%1d  ", p[i]->tarefas[j]);
+				}
+
+				printf("\t%10.1lf\n", p[i]->avaliacao);
+			} else 
+				printf("\n");
+
+			fflush(stdout);
+		}
+
+		fprintf(out, "\n\n");
+
+		for (i = 0; i < TAM_POP; i++) {
+			fprintf(out, "[%3d] - ", i);
+			if (p[i] != NULL) {
+				for (j = 0; j < QUANT_TAREFAS; j++) {
+					fprintf(out, "%1d  ", p[i]->tarefas[j]);
+				}
+
+				fprintf(out, "\t%10.1lf\n", p[i]->avaliacao);
+			} else 
+				fprintf(out, "\n");
+
+			fflush(out);
+		}
+	}
+}
+
+
+
+/*
+ * Procedimento que imprime de forma inteligente, quais índices da população
+ *	estão preenchidos e quais estão vazios.
+ */
+void Imprime_Dados_Populacao (Solucao ** p) {
+	int i = 0;
+	
+	printf("\n\n");
+	
+	for (i = 0; i < TAM_POP; i++) {
+		printf("[%5d] ", i);
+		printf("c%5.0lf / sum = a%12.6lf", p[i]->custo, p[i]->avaliacao);
+		
+		if (p[i]->custo > 5 * 209) {
+			printf(" X\n");
+		} else {
+			printf("\n");
+		}
+	}
+}
+
+
+
+/*
+ * Procedimento que realiza a leitura dos parâmetros de configuração do 
+ *	algoritmo.
+ */
+void Le_Parametros(char * conf) {
+	FILE * f = 0;
+
+	f = fopen(conf, "r");
+
+	if (f) {
+		fscanf(f, "%d", &TAM_POP);
+		fscanf(f, "%f", &TAX_CRUZAM);
+		fscanf(f, "%f", &TAX_MUT);
+		fscanf(f, "%d", &SECONDS);
+		
+		fclose(f);
+		
+	} else {
+		printf("Erro ao ler Configuração!\n");
+		exit(-1);
+	}
+}
+
+
+
+/*
+ * Procedimento que seleciona indivíduos não repetidos aleatoriamente da 
+ *	população anterior adicionando-os na nova e eliminando os indivíduos 
+ *	rejeitados.
+ */
+void Seleciona_Nova_Geracao(Solucao *** atual, Solucao *** proxima) {
+	int i = 0, buffer[TAM_POP], indice = 0;
+	Solucao ** ind_buffer = 0;
+	
+	// Inicializa o buffer de usados como 'nenhum item utilizado'
+	for (i = 0; i < TAM_POP; i++)
+		buffer[i] = 0;
+	
+	// Para cada vagas da próxima população ainda não preenchida
+	for (i = (int) TAM_POP * TAX_CRUZAM + 1; i < TAM_POP; i++) {
+		
+		// Escolhe um indivíduos da antiga população que ainda não foram 
+			// escolhidos (a fim de não gerar uma população com indivíduos 
+			// idênticos.
+		do {
+			indice = random() % TAM_POP;
+		} while (buffer[indice] == 1);
+		
+		// Define-o como utilizado.
+		buffer[indice] = 1;
+		// Referencia-o na nova população.
+		(*proxima)[i] = (*atual)[indice];
+	}
+	
+	// Assim, alguns indivíduos não serão referenciados e por isso devem ser
+		// eliminados
+	// Para cada item da população antiga
+	for (i = 0; i < TAM_POP; i++) {
+		// Verifica se o item não foi escolhido.
+		if (buffer[i] == 0) {
+			// Se sim, elimina-o
+			free((*atual)[i]->tarefas);
+			(*atual)[i]->tarefas = 0;
+			(*atual)[i]->avaliacao = -1;
+		}
+		
+		// Reseta a população antiga para se tornar um 'proxima população'
+		(*atual)[i] = NULL;
+	}
+	
+	// Comuta as populações.
+	ind_buffer = (*atual);
+	(*atual) = (*proxima);
+	(*proxima) = ind_buffer;	
+}
+
+
+
+/*
+ * Procedimento que copia os dados de um indivíduo para outro.
+ */
+void Copia_Melhor_Solucao(Solucao ** p, Solucao ** best){
+	int i = 0;
+	Solucao * best_pop_local = 0;
+	
+	// Inicia-se definido que o melhor é o primeiro indivíduo.
+	best_pop_local = p[0];
+	
+	// Compara-se o primeiro com os outros de forma a escolher o melhor 
+		// indivíduo de toda a população
+	for (i = 1; i < TAM_POP; i++) {
+		if (p[i]->avaliacao < best_pop_local->avaliacao)
+			best_pop_local = p[i];
+	}
+	
+	// Se o indivíduo best ainda não foi criado, cria-o
+	if (*best == NULL) {
+		// Cria indivíduo
+		*best = calloc (1, sizeof(Solucao));
+		(*best)->tarefas = calloc(QUANT_TAREFAS, sizeof(int));
+		(*best)->excesso = calloc(QUANT_AGENTES, sizeof(int));
+		
+		// Copia do melhor encontrado
+		(*best)->avaliacao = best_pop_local->avaliacao;
+		(*best)->custo = best_pop_local->custo;
+		
+		// Copia os dados 'tarefa' e 'excesso'
+		for (i = 0; i < QUANT_TAREFAS; i++) {
+			(*best)->tarefas[i] = best_pop_local->tarefas[i];
+			if (i < QUANT_AGENTES)
+				(*best)->excesso[i] = best_pop_local->excesso[i];
+		}
+		
+	} else {
+		// verifica se o melhor encontrado é melhor que o indivíduo atual
+		if ((*best)->avaliacao > 2 * 1000000 || 
+				((best_pop_local->avaliacao < 2 * 1000000) && 
+				(best_pop_local->custo < (*best)->custo))) {
+
+			// Copia os dados 'tarefa' e 'excesso'// 
+			for (i = 0; i < QUANT_TAREFAS; i++) {
+				(*best)->tarefas[i] = best_pop_local->tarefas[i];
+				if (i < QUANT_AGENTES)
+					(*best)->excesso[i] = best_pop_local->excesso[i];
+			}
+			
+			// Copia do melhor indivíduo
+			(*best)->avaliacao = best_pop_local->avaliacao;
+			(*best)->custo      = best_pop_local->custo;
+		}
+	}
+}
+
+
+
+/*
+ * Procedimento que recombina dois indivíduos gerando um terceiro por meio de
+ *	recombinação uniforme.
+ */
+int * Recombina(Solucao * i1, Solucao * i2) {
+	int i = 0, * tarefas = 0;
+
+	// Cria um novo vetor de tarefas
+	tarefas = calloc(QUANT_TAREFAS, sizeof(int));
+	
+	// Recombina de forma uniforme
+	for (i = 0; i < QUANT_TAREFAS; i++) {
+
+		// Escolhe de forma uniforme sobre dois indivíduos
+		if (random() % 2) 
+			tarefas[i] = i1->tarefas[i];
+		else
+			tarefas[i] = i2->tarefas[i];
+		
+	}
+
+	return tarefas;
+}
+
+
+
+/*
+ * Procedimento que cria vários indivíduos aleatórios preenchendo a população.
+ *	Além disso, é realizado a avaliação de cada um destes.
+ */
+void Cria_Nova_Populacao(Solucao *** P) {
+	int i = 0, j = 0, k = 0, menor = 0;
+	Solucao ** p_local = 0;
+
+	p_local = *P;
+
+	// Para cada item a ser criado
+	for (i = 0; i < TAM_POP; i++) {
+		
+		// Aloca suas variáveis que armazenarão suas informações
+		p_local[i]          = calloc(1, sizeof(Solucao));
+		p_local[i]->excesso = calloc(QUANT_AGENTES, sizeof(int));
+		p_local[i]->tarefas = calloc(QUANT_TAREFAS, sizeof(int));
+		
+		// Gera valores pra este indivíduo
+		for (j = 0; j < QUANT_TAREFAS; j++) {
+			// O primeiro indivíduo será gerado de forma gulosa e os outros
+				// Serão uma mistura de Guloso com Aleatoriedade
+			
+			// Se não for o primeiro indivíduo, possui 66% de gerar valores
+				// por meio de função randomica
+			if (i > 0 && random() % 3 != 0) {
+				p_local[i]->tarefas[j] = random() % QUANT_AGENTES;
+				
+			// Caso contrário, utiliza uma geração gulosa pra esta tarefa.
+			} else {
+				// O método guloso escolhe o recurso mais leve desta tarefa
+				p_local[i]->tarefas[j] = 0;
+				menor = 0;
+
+				// Seleciona o agente que utiliza o menor recurso desta
+					// tarefa
+				for (k = 1; k < QUANT_AGENTES; k++) {
+					if (RECURSOS_A_T[k][j] < RECURSOS_A_T[menor][j]) {
+						menor = k;
+						p_local[i]->tarefas[j] = k;
+					}
+				}
+			}
+		}
+
+		// Avalia o novo indivíduo gerado
+		Avalia_Solucao(p_local[i]);
+	}
+}
+
+
+
+/*
+ * Procedimento que realiza a seleção de dois indivíduos para a geração de um
+ *	terceiro.
+ */
+void Gera_Filhos(Solucao ** selecao, Solucao *** filhos) {
+	int i = 0, j = 0, numero_torneio = 0;
+	Solucao * i1 = 0, * i2 = 0, * buffer = 0;
+	
+	Solucao ** filhos_local = * filhos;
+	
+	// O primeiro indivíduo gerado é o indivíduo com melhor avaliação de toda
+		// população. Sendo assim, é realizado uma busca na população do 
+		// melhor indivíduo e adiciona-o na próxima geração.
+	j = 0;
+	for (i = 1; i < TAM_POP; i++)
+		if (selecao[i]->avaliacao < selecao[j]->avaliacao)
+			j = i;
+	
+	// Aloca memória pra nova solução
+	filhos_local[0]            = calloc(1, sizeof(Solucao));
+	filhos_local[0]->excesso   = calloc(QUANT_AGENTES, sizeof(int));
+	filhos_local[0]->tarefas   = calloc(QUANT_TAREFAS, sizeof(int));
+	
+	filhos_local[0]->avaliacao = selecao[j]->avaliacao;
+	
+	// Copia as tarefas do elemento escolhido
+	for (i = 0; i < QUANT_TAREFAS; i++)
+		filhos_local[0]->tarefas[i] = selecao[j]->tarefas[i];
+	
+
+	// Para os outros indivíduos que devem ser gerados, serão selecionados dois
+		// pais por torneio e realizados a sua recombinação
+	for (i = 1; i < (int) TAM_POP * TAX_CRUZAM + 1; i++) {
+	
+		// Quantidade de indivíduos que disputarão o torneio
+		numero_torneio = 1 + random() % ((TAM_POP / 2) + 1);
+	
+		// Aloca o novo filho ainda vazio.
+		filhos_local[i] = calloc(1, sizeof(Solucao));
+		filhos_local[i]->excesso = calloc(QUANT_AGENTES, sizeof(int));
+		
+		// Realiza o torneio 1
+		i1 = selecao[random() % TAM_POP];
+		
+		// Realiza torneio pra seleção do primeiro pai
+		j = 0;
+		while (j++ < numero_torneio) {
+			buffer = selecao[random() % TAM_POP];
+			
+			if (buffer->avaliacao < i1->avaliacao)
+				i1 = buffer;
+		}
+		
+		// Realiza o torneio 2
+		i2 = selecao[random() % TAM_POP];
+		
+		// Realiza torneio pra seleção do segundo pai
+		j = 0;
+		while (j++ < numero_torneio) {
+			buffer = selecao[random() % TAM_POP];
+			
+			if (buffer->avaliacao < i2->avaliacao)
+				i2 = buffer;
+		}
+		
+		// Verifica se os dois pais são idênticos, caso sim, gera um outro
+			// pai aleatório sem torneio e seleciona-o
+		if (i1 == i2)
+			i2 = selecao[random() % TAM_POP];
+		
+		// Recombina os dois indivíduos
+		filhos_local[i]->tarefas = Recombina(i1, i2);
+	}
+}
+
+
+
+/*
+ * Procedimento que realiza a mutação dos filhos por meio do processo Creep
+ *	Mutation.
+ * 
+ * Não são todos os filhos que são mutados. Eles são escolhidos aleatoriamente 
+ *	e TAX_MUT representa a porcentagem de mutação que cada indivíduo receberá.
+ * Ao final, este novo é avaliado.
+ */
+void Creep_Mutation(Solucao *** pop) {
+	int i = 0, j = 0, indice_tarefa = 0, quant_filhos = 0, agente_atual = 0;
+
+	// Quantidade de filhos gerados nesta próxima geração
+	quant_filhos = (int) TAM_POP * TAX_CRUZAM + 1;
+
+	// Para cada filho
+	for (i = 0; i < quant_filhos; i++) {
+
+		// Realiza mutação em uma porcentagem de do indivíduo
+		for (j = 0; j < (int) QUANT_TAREFAS * TAX_MUT; j++) {
+
+			// Muta a tarefa do indivíduo
+			indice_tarefa = random() % QUANT_TAREFAS;
+
+			agente_atual = (*pop)[i]->tarefas[indice_tarefa];
+
+			do {
+				(*pop)[i]->tarefas[indice_tarefa] = random() % QUANT_AGENTES;
+			} while ((*pop)[i]->tarefas[indice_tarefa] == agente_atual);
+		}	
+
+		// Avalia o novo indivíduo gerado.
+		Avalia_Solucao((*pop)[i]);
+	}	
+}
+
+
+
+/*
+ * Processo de geração de filhos e mutação.
+ */
+void Recombinacao(Solucao ** atual_p, Solucao *** proxima_p) {
+	
+	// Gera filhos da próxima geraçãp
+	Gera_Filhos(atual_p, proxima_p);
+
+	// Muta os filhos gerados
+	Creep_Mutation(proxima_p);
+}
+
+
+/*
+ * Algoritmo Genético segundo Lopes 2008.
+ */
+Solucao * Algoritmo_Genetico() {
+	Solucao ** p_atual = 0, ** p_proxima = 0;
+	Solucao * melhor_Solucao = 0;
+
+	// Instancia as duas populações
+	Instancia_Populacoes(&p_atual);
+	Instancia_Populacoes(&p_proxima);
+	
+	// Gera a população inicial para execução
+	Cria_Nova_Populacao(&p_atual);
+	
+	// Copia o melhor indivíduo gerado aleatoriamnte
+	Copia_Melhor_Solucao(p_atual, &melhor_Solucao);
+	
+	// Inicia o contador de tempo
+	start   = time(NULL);
+    endwait = start + SECONDS;
+	
+	do {
+		// Realiza a recombinação gerando novos filhos já mutados
+		Recombinacao(p_atual, &p_proxima);
+		
+		// Completa a população com indivíduos da população anterior
+		Seleciona_Nova_Geracao(&p_atual, &p_proxima);
+		
+		// Verifica a existência de um indivíduo melhor que o atual conhecido
+		Copia_Melhor_Solucao(p_atual, &melhor_Solucao);
+		
+		// Recebe o tempo atual.
+		start = time(NULL);
+		
+		// Verifica se o tempo excedeu o limite estabelecido por parâmentro.
+	} while (start < endwait);
+
+	// Desaloca populações após o fim do algoritmo
+	Desaloca_Populacao(&p_atual);
+	Desaloca_Populacao(&p_proxima);
+	
+	// Retorna o melhor indivíduo encontrado
+	return melhor_Solucao;
+}
+
+
+
+/*
+ * Procedimento principal
+ */
+int main(int argc, char** argv) {
+	Solucao * solve;
+	printf("\n/*");
+	printf("\n * Trabalho de Projeto e Análise de Algoritmo");
+ 	printf("\n * Período 16.1");
+ 	printf("\n * ");
+ 	printf("\n * Desenvolver Metaheurísticas para o Problema de Alocação Generalizada");
+ 	printf("\n * ");
+ 	printf("\n * Algoritmo: Genético.");
+ 	printf("\n * Data: 01/08/2016.");
+ 	printf("\n * Distribuição Livre, desde que referenciando o autor.");
+ 	printf("\n * ");
+ 	printf("\n * Professor: Haroldo Santos");
+ 	printf("\n * ");
+ 	printf("\n * Autor do Trabalho: Rodolfo Labiapari Mansur Guimarães");
+ 	printf("\n */");
+	
+	if (argc != 4) {
+		printf("\n\nErro nos parâmetros! Quantidade lida: %d\t Quantidade requerida: %d.", argc, 4);
+		printf("\nnome_programa arq_configuracao arq_instancia seed\n\n");
+		exit(-1);
+	}
+ 	//printf("\n\nExecutando...\n");
+	
+	char * instancia = argv[2];
+	char * configuracao = argv[1];
+	srand(atoi(argv[3]));
+	
+	Le_Instancia(instancia);
+	Le_Parametros(configuracao);
+	
+	out = fopen ("out_genetico.txt", "a");
+	
+	solve = Algoritmo_Genetico();
+	
+	Imprime_Solucao(solve);
+	
+	free(solve->tarefas);
+	free(solve);
+	
+	fflush(out);
+	fclose(out);
+	
+	fflush(stdout);
+
+	return (EXIT_SUCCESS);
+}
+		\end{minted}
+
+
+	\subsubsection{Algoritmo Recozimento Simulado} \label{cod:sa}
+
+		\begin{minted} [ frame=lines, framesep=2mm, tabsize=3, breaklines=true, baselinestretch=1.2, linenos, fontsize=\footnotesize ]{c}
+/*
+ * Trabalho de Projeto e Análise de Algoritmo
+ * Período 16.1
+ * 
+ * Desenvolver Metaheurísticas para o Problema de Alocação Generalizada
+ * 
+ * Algoritmo: Simulated Annealing.
+ * Data: 01/08/2016.
+ * Distribuição Livre, desde que referenciando o autor.
+ * 
+ * Professor: Haroldo Santos
+ * 
+ * Autor do Trabalho: Rodolfo Labiapari Mansur Guimarães
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <time.h>
+#include "gap.h"
+
+int TEMPERATURA = 0;
+
+
+/*
+ * Procedimento que realiza a leitura dos parâmetros de configuração do 
+ *	algoritmo.
+ */
+void Le_Parametros(char * conf) {
+	FILE * f;
+
+	f = fopen(conf, "r");
+
+	if (f) {
+		fscanf(f, "%d", &TEMPERATURA);
+		fscanf(f, "%d", &MAXIteracoes);
+		
+		fclose(f);
+		
+	} else {
+		printf("Erro ao ler Configuração!\n");
+		exit(-1);
+	}
+}
+
+
+
+/*
+ * Procedimento que realiza a alteração da temperatura por meio de método 
+ *	logaritmo.
+ */
+void Atualiza_Temperatura(double * t) {
+	*t = 0.995 * *t;
+}
+
+
+
+/*
+ * Procedimento de recozimento simulado, baseado no Lopes 2008.
+ */
+Solucao * Simulated_Annealing() {
+	int iteracoes = 0;
+	double fator_Boltzmann = 0, temperatura = 0, delta = 0, condicao_parada = 0, aceitacao_aleatoria = 0;
+	Solucao * melhor_s = 0, * atual_s = 0, * possivel_s = 0;
+	
+	// Define valores iniciais
+	temperatura     = TEMPERATURA;
+	condicao_parada = 0.2;
+	
+	// Instancia soluções aleatórias para início de execução
+	melhor_s   = Instancia_Solucao_Aleatoria();
+	atual_s    = Instancia_Solucao_Aleatoria();
+	possivel_s = Instancia_Solucao_Aleatoria();
+	
+	// verifica se alguma solução aleatória gerada é boa
+	Teste_Aceita_Nova_Solucao(0, &melhor_s, atual_s);
+	Teste_Aceita_Nova_Solucao(0, &melhor_s, possivel_s);
+	
+	// Enquanto tiver temperatura suficiente
+	while (temperatura > condicao_parada) {
+		
+		// Aperfeiçoa a solução desta temperatura.
+		while(iteracoes++ < MAXIteracoes) {
+			// Gera um novo vizinho
+			Gera_Vizinho(atual_s, &possivel_s);
+
+			delta = possivel_s->avaliacao - atual_s->avaliacao;
+			
+			// verifica se a solução atual é válida
+			if (delta < 0) {
+				// Se sim aceita.
+				Aceita_Nova_Solucao(&atual_s, possivel_s);
+				
+				// Verifica se é melhor que a melhor
+				Teste_Aceita_Nova_Solucao(temperatura, &melhor_s, possivel_s);
+				
+			} else {
+				// calcula fator Boltzmann
+				aceitacao_aleatoria = random() / ((double)(RAND_MAX));
+				fator_Boltzmann = exp(- (delta / (double) temperatura));
+				
+				if (aceitacao_aleatoria < fator_Boltzmann) {
+					Aceita_Nova_Solucao(&atual_s, possivel_s);
+				} 
+			}
+		}
+		
+		// Atualiza temperatura
+		Atualiza_Temperatura(&temperatura);
+
+		//Imprime_Status(temperatura, melhor_s);
+
+		iteracoes = 0;
+	}
+
+	// Desaloca soluções
+	Desaloca_Solucao(&atual_s);
+	Desaloca_Solucao(&possivel_s);
+	
+	return melhor_s;
+}
+
+
+/*
+ * Procedimento principal
+ */
+int main(int argc, char** argv) {
+	Solucao * solve;
+	
+	printf("\n/*");
+	printf("\n * Trabalho de Projeto e Análise de Algoritmo");
+ 	printf("\n * Período 16.1");
+ 	printf("\n * ");
+ 	printf("\n * Desenvolver Metaheurísticas para o Problema de Alocação Generalizada");
+ 	printf("\n * ");
+ 	printf("\n * Algoritmo: Simulated Annealing.");
+ 	printf("\n * Data: 01/08/2016.");
+ 	printf("\n * Distribuição Livre, desde que referenciando o autor.");
+ 	printf("\n * ");
+ 	printf("\n * Professor: Haroldo Santos");
+ 	printf("\n * ");
+ 	printf("\n * Autor do Trabalho: Rodolfo Labiapari Mansur Guimarães");
+ 	printf("\n */");
+	
+	if (argc != 4) {
+		printf("\n\nErro nos parâmetros! Quantidade lida: %d\t Quantidade requerida: %d.", argc, 4);
+		printf("\nnome_programa arq_configuracao arq_instancia seed\n\n");
+		exit(-1);
+	}
+	
+ 	//printf("\n\nExecutando...\n");
+	
+	char * instancia = argv[2];
+	char * configuracao = argv[1];
+	srand(atoi(argv[3]));
+	
+	Le_Instancia(instancia);
+	Le_Parametros(configuracao);
+
+	out = fopen ("out_simulated_annealing.txt", "a");
+	
+	solve = Simulated_Annealing();
+
+	Imprime_Solucao(solve);
+	
+	Desaloca_Solucao(&solve);
+	fclose(out);
+
+	return (EXIT_SUCCESS);
+}
+		\end{minted}
+
+
+	\subsubsection{Método Reinício} \label{cod:greedy}
+
+		\begin{minted} [ frame=lines, framesep=2mm, tabsize=3, breaklines=true, baselinestretch=1.2, linenos, fontsize=\footnotesize ]{c}
+
+/*
+ * Trabalho de Projeto e Análise de Algoritmo
+ * Período 16.1
+ * 
+ * Desenvolver Metaheurísticas para o Problema de Alocação Generalizada
+ * 
+ * Algoritmo: Guloso.
+ * Data: 01/08/2016.
+ * Distribuição Livre, desde que referenciando o autor.
+ * 
+ * Professor: Haroldo Santos
+ * 
+ * Autor do Trabalho: Rodolfo Labiapari Mansur Guimarães
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <limits.h>
+#include <time.h>
+#include "gap.h"
+
+
+
+/*
+ * Procedimento que realiza a leitura dos parâmetros de configuração do 
+ *	algoritmo.
+ */
+void Le_Parametros(char * config) {
+	FILE * f;
+
+	f = fopen(config, "r");
+
+	if (f) {
+		fscanf(f, "%d", &SECONDS);
+		fscanf(f, "%d", &MAXIteracoes);
+		
+		fclose(f);
+		
+	} else {
+		printf("Erro ao ler Configuração!\n");
+		exit(-1);
+	}
+}
+
+
+/*
+   Método de reinício:
+      1 - Gera uma solução aleatória S
+      2 - Pesquisa em uma vizinhança N(S) por uma solução melhor.
+         Se a melhor solução S' pertencente a N(S) é melhor do que S, então S = S', volte para passo 2.
+      3 - Atualize a melhor solução encontrada até o momento (Solução inculbente)
+      4 - Se houver tempo, volta para passo 1.
+ */
+Solucao * Metodo_reinicio() {
+	int i = 0;
+	Solucao * melhor_global = 0, * atual_s = 0, * vizinha_s = 0;
+	
+	melhor_global  = Instancia_Solucao();
+	atual_s        = Instancia_Solucao();
+	vizinha_s      = Instancia_Solucao();
+	
+	// Inicia o contador de tempo
+	start   = time(NULL);
+    endwait = start + SECONDS;
+	
+	do {
+		// Gera soluções aleatórias
+		Gera_Solucao_Aleatoria(&atual_s);
+		//Gera_Solucao_Aleatoria(&vizinha_s);
+	
+		// Testa se a solução é melhor que a atual
+		Teste_Aceita_Nova_Solucao(endwait - start, &melhor_global, atual_s);
+		//Teste_Aceita_Nova_Solucao(endwait - start, &melhor_global, vizinha_s);
+		
+		// Realiza MAXIteracoes de vizinhos a procura de soluções
+			// melhoras que a atual.
+		for (i = 0; i < MAXIteracoes; i++) {
+			Gera_Vizinho(atual_s, &vizinha_s);
+			
+			if (vizinha_s->avaliacao < atual_s->avaliacao)
+				Aceita_Nova_Solucao(&atual_s, vizinha_s);
+		}
+		
+		// Verifica se na procura de soluções vizinhas, algoma é boa
+		Teste_Aceita_Nova_Solucao(endwait - start, &melhor_global, atual_s);
+		
+		// Atualiza o tempo
+		start = time(NULL);
+
+		//Imprime_Status((double) endwait - start, melhor_global);
+
+	} while (start < endwait);
+	
+	// Desaloca solução
+	Desaloca_Solucao(&atual_s);
+	Desaloca_Solucao(&vizinha_s);
+	
+	return melhor_global;
+}
+
+/*
+ * Procedimento principal
+ */
+int main(int argc, char** argv) {
+	Solucao * solve;
+
+	printf("\n/*");
+	printf("\n * Trabalho de Projeto e Análise de Algoritmo");
+ 	printf("\n * Período 16.1");
+ 	printf("\n * ");
+ 	printf("\n * Desenvolver Metaheurísticas para o Problema de Alocação Generalizada");
+ 	printf("\n * ");
+ 	printf("\n * Algoritmo: Guloso.");
+ 	printf("\n * Data: 01/08/2016.");
+ 	printf("\n * Distribuição Livre, desde que referenciando o autor.");
+ 	printf("\n * ");
+ 	printf("\n * Professor: Haroldo Santos");
+ 	printf("\n * ");
+ 	printf("\n * Autor do Trabalho: Rodolfo Labiapari Mansur Guimarães");
+ 	printf("\n */");
+	
+	if (argc != 4) {
+		printf("\n\nErro nos parâmetros! Quantidade lida: %d\t Quantidade requerida: %d.", argc, 4);
+		printf("\nnome_programa arq_configuracao arq_instancia seed\n\n");
+		exit(-1);
+	}
+	
+ 	//printf("\n\nExecutando...\n");
+	
+	char * instancia = argv[2];
+	char * configuracao = argv[1];
+	srand(atoi(argv[3]));
+	
+	Le_Instancia(instancia);
+	
+	Le_Parametros(configuracao);
+
+	out = fopen ("out_reinicio.txt", "a");
+	
+	solve = Metodo_reinicio();
+
+	Imprime_Solucao(solve);
+	Desaloca_Solucao(&solve);
+	fclose(out);
+
+	return (EXIT_SUCCESS);
+}
+		\end{minted}
+
+
+	\subsubsection{Algoritmo GRASP} \label{cod:grasp}
+
+		\begin{minted} [ frame=lines, framesep=2mm, tabsize=3, breaklines=true, baselinestretch=1.2, linenos, fontsize=\footnotesize ]{c}
+/*
+ * Trabalho de Projeto e Análise de Algoritmo
+ * Período 16.1
+ * 
+ * Desenvolver Metaheurísticas para o Problema de Alocação Generalizada
+ * 
+ * Algoritmo: GRASP.
+ * Data: 01/08/2016.
+ * Distribuição Livre, desde que referenciando o autor.
+ * 
+ * Professor: Haroldo Santos
+ * 
+ * Autor do Trabalho: Rodolfo Labiapari Mansur Guimarães
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <limits.h>
+#include <time.h>
+#include "gap.h"
+
+
+/*
+ * Procedimento que realiza a leitura dos parâmetros de configuração do 
+ *	algoritmo.
+ */
+void Le_Parametros(char * config) {
+	FILE * f;
+
+	f = fopen(config, "r");
+
+	if (f) {
+		fscanf(f, "%d", &SECONDS);
+		fscanf(f, "%d", &MAXIteracoes);
+		
+		fclose(f);
+		
+	} else {
+		printf("Erro ao ler Configuração!\n");
+		exit(-1);
+	}
+}
+
+
+
+/*
+ * Método Guloso Randômico
+ */
+void GreedyRandomizedConstruction(Solucao ** s, float alfa) {
+	int i = 0, j = 0, min = 0, max = 0, fator = 0, sum_recursos = 0;
+	char solucao_invalida = 0;
+
+	for (i = 0; i < QUANT_AGENTES; i++)
+		(*s)->excesso[i] = 0;
+
+	(*s)->custo = 0;
+	
+	// Para cada tarefa
+	for (i = 0; i < QUANT_TAREFAS; i++) {
+		min = max = 0;
+
+		// Encontra os valores máximos e mínimos dos agentes
+		for (j = 1; j < QUANT_AGENTES; j++) {
+			if (RECURSOS_A_T[j][i] + CUSTO_A_T[j][i] < RECURSOS_A_T[min][i] + CUSTO_A_T[min][i])
+				min = j;
+			
+			if (RECURSOS_A_T[j][i] + CUSTO_A_T[j][i] > RECURSOS_A_T[max][i] + CUSTO_A_T[max][i])
+				max = j;
+		}
+		
+		// Calcula um fator de acordo com o valor alfa
+		fator = RECURSOS_A_T[min][i] + alfa * (RECURSOS_A_T[max][i] - RECURSOS_A_T[min][i]);
+
+		// procura o agente que tem maior proximidade com o fator
+		min = 0;
+		for (j = 1; j < QUANT_AGENTES; j++) {
+			if (abs(RECURSOS_A_T[j][i] - fator) < abs(RECURSOS_A_T[min][i] - fator))
+				min = j;
+		}
+		
+		// Atribui a esta tarefa
+		(*s)->tarefas[i] = min;
+
+		// Calcula a quantidade de recusto utilizado ao atribuir a nova tarefa ao agente.
+		(*s)->excesso[min] += RECURSOS_A_T[min][i];
+
+		// Calcula o custo daquela tarefa
+		(*s)->custo += CUSTO_A_T[min][i];
+	}
+
+	// Verifica se a solução gerada é válida
+	for (j = 0; j < QUANT_AGENTES; j++) {
+		sum_recursos += (*s)->excesso[j];
+
+		if ((*s)->excesso[j] > CAPAC_AGENTES[j]) {
+			solucao_invalida = 1;
+		}
+	}
+
+	// Calcula o fator avaliação 
+	if (solucao_invalida) 
+		(*s)->avaliacao = ((double) sum_recursos ) * 1000000;
+	else {
+		(*s)->avaliacao = ((double) (*s)->custo);
+	}
+}
+	
+
+/*
+ * Método GRASP
+ */
+Solucao * GRASP() {
+	int i = 0;
+	Solucao * melhor_global = 0, * atual_s = 0, * vizinha_s = 0;
+	
+	// Instancia soluções
+	melhor_global  = Instancia_Solucao();
+	atual_s        = Instancia_Solucao();
+	vizinha_s      = Instancia_Solucao();
+	
+	// Inicia o contador de tempo
+	start   = time(NULL);
+    endwait = start + SECONDS;
+	
+	do {
+		// Gera um novo indivíduo
+		GreedyRandomizedConstruction(&atual_s, random() / RAND_MAX);
+		
+		// Verifica sua avaliação
+		Teste_Aceita_Nova_Solucao(endwait - start, &melhor_global, atual_s);
+		
+		// Gera N vizinhos e verifica suas avaliações
+		for (i = 0; i < MAXIteracoes; i++) {
+			Gera_Vizinho(atual_s, &vizinha_s);
+			
+			if (vizinha_s->avaliacao < atual_s->avaliacao)
+				Aceita_Nova_Solucao(&atual_s, vizinha_s);
+		}
+		
+		// Testa se é a melhor solução encontrada
+		Teste_Aceita_Nova_Solucao(endwait - start, &melhor_global, atual_s);	
+		
+		// Verifica se ainda possui tempo
+		start = time(NULL);
+	} while (start < endwait);
+	
+	Desaloca_Solucao(&atual_s);
+	Desaloca_Solucao(&vizinha_s);
+
+	return melhor_global;
+}
+
+
+
+
+/*
+ * 
+ */
+int main(int argc, char** argv) {
+	Solucao * solve;
+
+	printf("\n/*");
+	printf("\n * Trabalho de Projeto e Análise de Algoritmo");
+ 	printf("\n * Período 16.1");
+ 	printf("\n * ");
+ 	printf("\n * Desenvolver Metaheurísticas para o Problema de Alocação Generalizada");
+ 	printf("\n * ");
+ 	printf("\n * Algoritmo: GRASP.");
+ 	printf("\n * Data: 01/08/2016.");
+ 	printf("\n * Distribuição Livre, desde que referenciando o autor.");
+ 	printf("\n * ");
+ 	printf("\n * Professor: Haroldo Santos");
+ 	printf("\n * ");
+ 	printf("\n * Autor do Trabalho: Rodolfo Labiapari Mansur Guimarães");
+ 	printf("\n */");
+	
+	if (argc != 4) {
+		printf("\n\nErro nos parâmetros! Quantidade lida: %d\t Quantidade requerida: %d.", argc, 4);
+		printf("\nnome_programa arq_configuracao arq_instancia seed\n\n");
+		exit(-1);
+	}
+ 	//printf("\n\nExecutando...\n");
+	
+	char * instancia = argv[2];
+	char * configuracao = argv[1];
+	srand(atoi(argv[3]));
+	
+	Le_Instancia(instancia);
+	
+	Le_Parametros(configuracao);
+
+	out = fopen ("out_grasp.txt", "a");
+	
+	solve = GRASP();
+
+	Imprime_Solucao(solve);
+	Desaloca_Solucao(&solve);
+	fclose(out);
+
+	return (EXIT_SUCCESS);
+}
+		\end{minted}

@@ -1,0 +1,46 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefault{k+kt}{void} \PYGdefault{n+nf}{Cria\PYGdefaultZus{}Nova\PYGdefaultZus{}Populacao}\PYGdefault{p}{(}\PYGdefault{n}{Individuo} \PYGdefault{o}{***} \PYGdefault{n}{P}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+	\PYGdefault{k+kt}{int} \PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{,} \PYGdefault{n}{j} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{,} \PYGdefault{n}{k} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{,} \PYGdefault{n}{menor} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+	\PYGdefault{n}{Individuo} \PYGdefault{o}{**} \PYGdefault{n}{p\PYGdefaultZus{}local} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+
+	\PYGdefault{n}{p\PYGdefaultZus{}local} \PYGdefault{o}{=} \PYGdefault{o}{*}\PYGdefault{n}{P}\PYGdefault{p}{;}
+
+	\PYGdefault{c+c1}{// Para cada item a ser criado}
+	\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;} \PYGdefault{n}{i} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{TAM\PYGdefaultZus{}POP}\PYGdefault{p}{;} \PYGdefault{n}{i}\PYGdefault{o}{++}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+
+		\PYGdefault{c+c1}{// Aloca suas variáveis que armazenarão suas informações}
+		\PYGdefault{n}{p\PYGdefaultZus{}local}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]}          \PYGdefault{o}{=} \PYGdefault{n}{calloc}\PYGdefault{p}{(}\PYGdefault{l+m+mi}{1}\PYGdefault{p}{,} \PYGdefault{k}{sizeof}\PYGdefault{p}{(}\PYGdefault{n}{Individuo}\PYGdefault{p}{));}
+		\PYGdefault{n}{p\PYGdefaultZus{}local}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{excesso} \PYGdefault{o}{=} \PYGdefault{n}{calloc}\PYGdefault{p}{(}\PYGdefault{n}{QUANT\PYGdefaultZus{}AGENTES}\PYGdefault{p}{,} \PYGdefault{k}{sizeof}\PYGdefault{p}{(}\PYGdefault{k+kt}{int}\PYGdefault{p}{));}
+		\PYGdefault{n}{p\PYGdefaultZus{}local}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas} \PYGdefault{o}{=} \PYGdefault{n}{calloc}\PYGdefault{p}{(}\PYGdefault{n}{QUANT\PYGdefaultZus{}TAREFAS}\PYGdefault{p}{,} \PYGdefault{k}{sizeof}\PYGdefault{p}{(}\PYGdefault{k+kt}{int}\PYGdefault{p}{));}
+
+		\PYGdefault{c+c1}{// Gera valores pra este indivíduo}
+		\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{j} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;} \PYGdefault{n}{j} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{QUANT\PYGdefaultZus{}TAREFAS}\PYGdefault{p}{;} \PYGdefault{n}{j}\PYGdefault{o}{++}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+			\PYGdefault{c+c1}{// O primeiro indivíduo será gerado de forma gulosa e os outros}
+				\PYGdefault{c+c1}{// Serão uma mistura de Guloso com Aleatoriedade}
+
+			\PYGdefault{c+c1}{// Se não for o primeiro indivíduo, possui 66\PYGdefaultZpc{} de gerar valores}
+				\PYGdefault{c+c1}{// por meio de função randomica}
+			\PYGdefault{k}{if} \PYGdefault{p}{(}\PYGdefault{n}{i} \PYGdefault{o}{\PYGdefaultZgt{}} \PYGdefault{l+m+mi}{0} \PYGdefault{o}{\PYGdefaultZam{}\PYGdefaultZam{}} \PYGdefault{n}{random}\PYGdefault{p}{()} \PYGdefault{o}{\PYGdefaultZpc{}} \PYGdefault{l+m+mi}{3} \PYGdefault{o}{!=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+				\PYGdefault{n}{p\PYGdefaultZus{}local}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}\PYGdefault{p}{[}\PYGdefault{n}{j}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{n}{random}\PYGdefault{p}{()} \PYGdefault{o}{\PYGdefaultZpc{}} \PYGdefault{n}{QUANT\PYGdefaultZus{}AGENTES}\PYGdefault{p}{;}
+
+			\PYGdefault{c+c1}{// Caso contrário, utiliza uma geração gulosa pra esta tarefa.}
+			\PYGdefault{p}{\PYGdefaultZcb{}} \PYGdefault{k}{else} \PYGdefault{p}{\PYGdefaultZob{}}
+				\PYGdefault{c+c1}{// O método guloso escolhe o recurso mais leve desta tarefa}
+				\PYGdefault{n}{p\PYGdefaultZus{}local}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}\PYGdefault{p}{[}\PYGdefault{n}{j}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+				\PYGdefault{n}{menor} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+
+				\PYGdefault{c+c1}{// Seleciona o agente que utiliza o menor recurso desta}
+					\PYGdefault{c+c1}{// tarefa}
+				\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{k} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{1}\PYGdefault{p}{;} \PYGdefault{n}{k} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{QUANT\PYGdefaultZus{}AGENTES}\PYGdefault{p}{;} \PYGdefault{n}{k}\PYGdefault{o}{++}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+					\PYGdefault{k}{if} \PYGdefault{p}{(}\PYGdefault{n}{RECURSOS\PYGdefaultZus{}A\PYGdefaultZus{}T}\PYGdefault{p}{[}\PYGdefault{n}{k}\PYGdefault{p}{][}\PYGdefault{n}{j}\PYGdefault{p}{]} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{RECURSOS\PYGdefaultZus{}A\PYGdefaultZus{}T}\PYGdefault{p}{[}\PYGdefault{n}{menor}\PYGdefault{p}{][}\PYGdefault{n}{j}\PYGdefault{p}{])} \PYGdefault{p}{\PYGdefaultZob{}}
+						\PYGdefault{n}{menor} \PYGdefault{o}{=} \PYGdefault{n}{k}\PYGdefault{p}{;}
+						\PYGdefault{n}{p\PYGdefaultZus{}local}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}\PYGdefault{p}{[}\PYGdefault{n}{j}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{n}{k}\PYGdefault{p}{;}
+					\PYGdefault{p}{\PYGdefaultZcb{}}
+				\PYGdefault{p}{\PYGdefaultZcb{}}
+			\PYGdefault{p}{\PYGdefaultZcb{}}
+		\PYGdefault{p}{\PYGdefaultZcb{}}
+
+		\PYGdefault{c+c1}{// Avalia o novo indivíduo gerado}
+		\PYGdefault{n}{Avalia\PYGdefaultZus{}Individuo}\PYGdefault{p}{(}\PYGdefault{n}{p\PYGdefaultZus{}local}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]);}
+	\PYGdefault{p}{\PYGdefaultZcb{}}
+\end{Verbatim}

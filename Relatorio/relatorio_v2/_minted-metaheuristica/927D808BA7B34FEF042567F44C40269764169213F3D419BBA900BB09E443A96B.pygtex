@@ -1,0 +1,5 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefault{k+kt}{void} \PYGdefault{n+nf}{Atualiza\PYGdefaultZus{}Temperatura}\PYGdefault{p}{(}\PYGdefault{k+kt}{double} \PYGdefault{o}{*} \PYGdefault{n}{t}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+	\PYGdefault{o}{*}\PYGdefault{n}{t} \PYGdefault{o}{=} \PYGdefault{l+m+mf}{0.995} \PYGdefault{o}{*} \PYGdefault{o}{*}\PYGdefault{n}{t}\PYGdefault{p}{;}
+\PYGdefault{p}{\PYGdefaultZcb{}}
+\end{Verbatim}

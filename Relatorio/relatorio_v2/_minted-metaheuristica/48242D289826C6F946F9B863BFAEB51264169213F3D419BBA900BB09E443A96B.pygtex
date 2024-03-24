@@ -1,0 +1,67 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefault{k+kt}{void} \PYGdefault{n+nf}{Gera\PYGdefaultZus{}Vizinho}\PYGdefault{p}{(}\PYGdefault{n}{Solucao} \PYGdefault{o}{*} \PYGdefault{n}{atual}\PYGdefault{p}{,} \PYGdefault{n}{Solucao} \PYGdefault{o}{**} \PYGdefault{n}{proxima}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+	\PYGdefault{k+kt}{int} \PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{,} \PYGdefault{n}{j} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{,} \PYGdefault{n}{agente\PYGdefaultZus{}atual} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{,} \PYGdefault{n}{agente\PYGdefaultZus{}novo} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{,}
+	\PYGdefault{n}{tarefa\PYGdefaultZus{}escolhida1} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{,} \PYGdefault{n}{sum\PYGdefaultZus{}recursos} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{,}
+	\PYGdefault{n}{quant\PYGdefaultZus{}alteracoes} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+	\PYGdefault{k+kt}{char} \PYGdefault{n}{solucao\PYGdefaultZus{}invalida} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;}
+
+	\PYGdefault{c+c1}{// Copia os valores do atual}
+	\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;} \PYGdefault{n}{i} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{QUANT\PYGdefaultZus{}TAREFAS}\PYGdefault{p}{;} \PYGdefault{n}{i}\PYGdefault{o}{++}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+		\PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{proxima}\PYGdefault{p}{)}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{n}{atual}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{];}
+		\PYGdefault{k}{if} \PYGdefault{p}{(}\PYGdefault{n}{i} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{QUANT\PYGdefaultZus{}AGENTES}\PYGdefault{p}{)}
+			\PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{proxima}\PYGdefault{p}{)}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{excesso}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{n}{atual}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{excesso}\PYGdefault{p}{[}\PYGdefault{n}{i}\PYGdefault{p}{];}
+	\PYGdefault{p}{\PYGdefaultZcb{}}
+
+	\PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{proxima}\PYGdefault{p}{)}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{custo} \PYGdefault{o}{=} \PYGdefault{n}{atual}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{custo}\PYGdefault{p}{;}
+
+
+	\PYGdefault{c+c1}{// Define uma quantidade de alterações pra gerar o vizinho}
+	\PYGdefault{n}{quant\PYGdefaultZus{}alteracoes} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{2}\PYGdefault{p}{;}
+
+	\PYGdefault{c+c1}{// Altera o indivíduo}
+	\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{i} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;} \PYGdefault{n}{i} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{quant\PYGdefaultZus{}alteracoes}\PYGdefault{p}{;} \PYGdefault{n}{i}\PYGdefault{o}{++}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+
+		\PYGdefault{c+c1}{// Escolhe a tarefa que será alterada}
+		\PYGdefault{n}{tarefa\PYGdefaultZus{}escolhida1} \PYGdefault{o}{=} \PYGdefault{n}{random}\PYGdefault{p}{()} \PYGdefault{o}{\PYGdefaultZpc{}} \PYGdefault{n}{QUANT\PYGdefaultZus{}TAREFAS}\PYGdefault{p}{;}
+		\PYGdefault{n}{agente\PYGdefaultZus{}atual} \PYGdefault{o}{=} \PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{proxima}\PYGdefault{p}{)}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}\PYGdefault{p}{[}\PYGdefault{n}{tarefa\PYGdefaultZus{}escolhida1}\PYGdefault{p}{];}
+
+		\PYGdefault{c+c1}{// Gera um novo agente pra ela e certifica que ele é diferente do anterior.}
+		\PYGdefault{k}{do} \PYGdefault{p}{\PYGdefaultZob{}}
+			\PYGdefault{n}{agente\PYGdefaultZus{}novo} \PYGdefault{o}{=} \PYGdefault{n}{random}\PYGdefault{p}{()} \PYGdefault{o}{\PYGdefaultZpc{}} \PYGdefault{n}{QUANT\PYGdefaultZus{}AGENTES}\PYGdefault{p}{;}
+		\PYGdefault{p}{\PYGdefaultZcb{}} \PYGdefault{k}{while} \PYGdefault{p}{(}\PYGdefault{n}{agente\PYGdefaultZus{}novo} \PYGdefault{o}{==} \PYGdefault{n}{agente\PYGdefaultZus{}atual}\PYGdefault{p}{);}
+
+		\PYGdefault{c+c1}{// Atribui o novo agente à tarefa}
+		\PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{proxima}\PYGdefault{p}{)}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{tarefas}\PYGdefault{p}{[}\PYGdefault{n}{tarefa\PYGdefaultZus{}escolhida1}\PYGdefault{p}{]} \PYGdefault{o}{=} \PYGdefault{n}{agente\PYGdefaultZus{}novo}\PYGdefault{p}{;}
+
+		\PYGdefault{c+c1}{// Procedimento Otimizado:}
+			\PYGdefault{c+c1}{// A cada alteração, realiza\PYGdefaultZhy{}se a alteração dos valores da nova geração.}
+			\PYGdefault{c+c1}{// Como este novo vizinho não é feito do zero e sim sobre cópia de um anterior,}
+			\PYGdefault{c+c1}{// basta alterar os valores herdados do seu anterior, atualiando em O(1)}
+
+		\PYGdefault{c+c1}{// Sendo assim, atualiza o excesso de cada agente}
+			\PYGdefault{c+c1}{// Retira recurso do agente que ficou livre}
+		\PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{proxima}\PYGdefault{p}{)}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{excesso}\PYGdefault{p}{[}\PYGdefault{n}{agente\PYGdefaultZus{}atual}\PYGdefault{p}{]} \PYGdefault{o}{\PYGdefaultZhy{}=} \PYGdefault{n}{RECURSOS\PYGdefaultZus{}A\PYGdefaultZus{}T}\PYGdefault{p}{[}\PYGdefault{n}{agente\PYGdefaultZus{}atual}\PYGdefault{p}{][}\PYGdefault{n}{tarefa\PYGdefaultZus{}escolhida1}\PYGdefault{p}{];}
+			\PYGdefault{c+c1}{// Acrescenta recurso do agente que recebeu a tarefa atual}
+		\PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{proxima}\PYGdefault{p}{)}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{excesso}\PYGdefault{p}{[}\PYGdefault{n}{agente\PYGdefaultZus{}novo} \PYGdefault{p}{]} \PYGdefault{o}{+=} \PYGdefault{n}{RECURSOS\PYGdefaultZus{}A\PYGdefaultZus{}T}\PYGdefault{p}{[}\PYGdefault{n}{agente\PYGdefaultZus{}novo} \PYGdefault{p}{][}\PYGdefault{n}{tarefa\PYGdefaultZus{}escolhida1}\PYGdefault{p}{];}
+
+		\PYGdefault{c+c1}{// Calcula o custo atual desta solução}
+		\PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{proxima}\PYGdefault{p}{)}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{custo} \PYGdefault{o}{+=} \PYGdefault{n}{CUSTO\PYGdefaultZus{}A\PYGdefaultZus{}T}\PYGdefault{p}{[}\PYGdefault{n}{agente\PYGdefaultZus{}novo} \PYGdefault{p}{][}\PYGdefault{n}{tarefa\PYGdefaultZus{}escolhida1}\PYGdefault{p}{]} \PYGdefault{o}{\PYGdefaultZhy{}} \PYGdefault{n}{CUSTO\PYGdefaultZus{}A\PYGdefaultZus{}T}\PYGdefault{p}{[}\PYGdefault{n}{agente\PYGdefaultZus{}atual}\PYGdefault{p}{][}\PYGdefault{n}{tarefa\PYGdefaultZus{}escolhida1}\PYGdefault{p}{];}
+	\PYGdefault{p}{\PYGdefaultZcb{}}
+
+	\PYGdefault{c+c1}{// Verifica se a solução gerada é válida}
+	\PYGdefault{k}{for} \PYGdefault{p}{(}\PYGdefault{n}{j} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{0}\PYGdefault{p}{;} \PYGdefault{n}{j} \PYGdefault{o}{\PYGdefaultZlt{}} \PYGdefault{n}{QUANT\PYGdefaultZus{}AGENTES}\PYGdefault{p}{;} \PYGdefault{n}{j}\PYGdefault{o}{++}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+		\PYGdefault{n}{sum\PYGdefaultZus{}recursos} \PYGdefault{o}{+=} \PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{proxima}\PYGdefault{p}{)}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{excesso}\PYGdefault{p}{[}\PYGdefault{n}{j}\PYGdefault{p}{];}
+
+		\PYGdefault{k}{if} \PYGdefault{p}{((}\PYGdefault{o}{*}\PYGdefault{n}{proxima}\PYGdefault{p}{)}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{excesso}\PYGdefault{p}{[}\PYGdefault{n}{j}\PYGdefault{p}{]} \PYGdefault{o}{\PYGdefaultZgt{}} \PYGdefault{n}{CAPAC\PYGdefaultZus{}AGENTES}\PYGdefault{p}{[}\PYGdefault{n}{j}\PYGdefault{p}{])} \PYGdefault{p}{\PYGdefaultZob{}}
+			\PYGdefault{n}{solucao\PYGdefaultZus{}invalida} \PYGdefault{o}{=} \PYGdefault{l+m+mi}{1}\PYGdefault{p}{;}
+		\PYGdefault{p}{\PYGdefaultZcb{}}
+	\PYGdefault{p}{\PYGdefaultZcb{}}
+
+	\PYGdefault{c+c1}{// Calcula o fator avaliação}
+	\PYGdefault{k}{if} \PYGdefault{p}{(}\PYGdefault{n}{solucao\PYGdefaultZus{}invalida}\PYGdefault{p}{)}
+		\PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{proxima}\PYGdefault{p}{)}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{avaliacao} \PYGdefault{o}{=} \PYGdefault{p}{((}\PYGdefault{k+kt}{double}\PYGdefault{p}{)} \PYGdefault{n}{sum\PYGdefaultZus{}recursos} \PYGdefault{p}{)} \PYGdefault{o}{*} \PYGdefault{l+m+mi}{1000000}\PYGdefault{p}{;}
+	\PYGdefault{k}{else} \PYGdefault{p}{\PYGdefaultZob{}}
+		\PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{proxima}\PYGdefault{p}{)}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{avaliacao} \PYGdefault{o}{=} \PYGdefault{p}{((}\PYGdefault{k+kt}{double}\PYGdefault{p}{)}  \PYGdefault{p}{(}\PYGdefault{o}{*}\PYGdefault{n}{proxima}\PYGdefault{p}{)}\PYGdefault{o}{\PYGdefaultZhy{}\PYGdefaultZgt{}}\PYGdefault{n}{custo}\PYGdefault{p}{);}
+	\PYGdefault{p}{\PYGdefaultZcb{}}
+\PYGdefault{p}{\PYGdefaultZcb{}}
+\end{Verbatim}

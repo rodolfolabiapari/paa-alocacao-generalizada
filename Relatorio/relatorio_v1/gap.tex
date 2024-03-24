@@ -1,0 +1,514 @@
+\documentclass[12pt]{article}
+
+\usepackage{sbc-template}
+
+\usepackage{graphicx,url}
+
+\usepackage[brazil]{babel}
+\usepackage{verbatim}
+\usepackage{todonotes}
+\usepackage{longtable}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{amsfonts}
+\usepackage{algorithm, algpseudocode}
+\usepackage{color}
+\usepackage{minted}
+\usepackage{url}
+\usepackage{multicol}
+%\usepackage[latin1]{inputenc}
+\usepackage[utf8]{inputenc}
+\usepackage{longtable}
+
+
+\sloppy
+
+\title{Projeto e Análise de Algoritmos -- \\ Problema Problema da Alocação Generalizada com uso de Algoritmos Heurísticos}
+\author{Rodolfo Labiapari Mansur Guimarães}
+
+\address{Departamento de Computação -- Universidade Federal de Ouro Preto \\
+ 35.400-000 -- Ouro Preto - MG -- Brasil
+ \email{rodolfolabiapari@gmail.com}
+ }
+
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+	This report aims to present the strategy implemented to solve the problem of $n$-Queens Awards using Branch and Bound. Along with the algorithm, all settings will be displayed, characteristics, reflection on the decisions taken, results of experiments and, by the end, the final considerations of the project.
+	\todo{Fazer}
+\end{abstract}
+
+\begin{resumo}
+Este relatório tem como principal objetivo apresentar estratégia implementada para a resolução do problema das $n$-Rainhas com Prêmios utilizando \textit{Branch and Bound}. Junto com o algoritmo, serão apresentadas todas as definições, características, as reflexão sobre as decisões tomadas, resultados obtidos dos experimentos realizados e, por final, as  considerações finais de projeto.
+
+Este relatório estuda modelos e algoritmos para o Problema de Alocação Generalizada (GAP) bem como alguns métodos para sua resolução, em várias instâncias do problema. São apresentadas, também, as soluções obtidas e suas avaliações.
+\end{resumo}
+
+
+
+\section{Problema da Alocação Generalizada}
+	Neste capítulo, faz-se descrições do GAP em sua forma clássica.
+	\subsection{Definição}
+		GAP é um problema de alocação de recursos, denominado tarefas, para determinados agentes, alocadores, com propósito de custo mínimo.
+		
+		$$\min \sum_{i \in I}^{} \sum_{j \in J}^{} c_{ij}x_{ij}$$
+		
+		Os elementos básicos da fórmula pra este problema são:
+		
+		\begin{itemize}
+			\item Um conjunto $I$ de agentes $(i = 1, 2, 3, \ldots, m)$;
+			
+			\item Um conjunto $J$ de agentes $(j = 1, 2, 3, \ldots, n)$;
+		\end{itemize}
+		
+		Cada tarefa $T_j \in T$ consome uma quantidade de recursos $a_{ij}$ do agente $i \in I$, ou seja, consome uma parte da capacidade do agente, a um diferente custo $c_{ij}$.
+		
+		Este problema deve atender a três restrições:
+		
+		\begin{enumerate}
+			\item Cada agente tem uma capacidade limitada;
+			
+			\item Cada tarefa sé pode ser alocada a um único agente;
+			 
+			\item Todas as tarefas devem ser alocadas;
+		\end{enumerate}
+		
+		A solução para o GAP é um vetor de $n$ elementos, onde a $k$-ésima posição do vetor guarda o agente ao qual a $k$-ésima tarefa foi associada.
+		
+		\todo{text}
+		Dasgupta 2008 cita que
+		
+		\begin{quotation}
+			{\it ``Existe um número de agentes e um número de tarefas. Podemos alocar qualquer agente a qualquer uma das tarefas, porém, cada alocação tem um custo que pode variar dependendo da tarefa e agente específicos. É necessário que todas as tarefas sejam feitas, designando exatamente um agente para cada tarefa de modo que o custo total (a soma) de todas as alocações seja minimizado.''}
+		\end{quotation}
+		
+
+\section{Heurísticas}
+	As heurísticas (ou modelos heurísticos) não garantem que seja encontrado o ótimo. Geralmente encontram soluções próximas à ótima, mas algumas vezes, dependendo das circunstâncias, é possível que sejam obtidos resultados arbitrariamente ruins (ou também o resultado ótimo). Isso denota uma relação de custo benefício. Ao utilizarmos este tipo de método, não precisamos da melhor solução possível, mas geralmente obtemos uma solução viável com um tempo computacional aceitável.
+	
+	Dentro da categoria das heurísticas estão alguns métodos caracterizados como metaheurísticas. São definidos como uma metaheurística os métodos que otimizam um problema ao iterativamente buscar a melhora de uma canditada à solução, utilizando alguma medida de qualidade. São métodos de otimização estocástica, ou seja, algoritmos e técnicas que utilizam alguma forma de aleatoriedade para encontrar uma solução ótima ou próxima à ótima em problemas difíceis de serem resolvidos.
+
+	Metaheurísticas são utilizadas para encontrar soluções para problemas para os quais não se tem muitas informações. Não se sabe qual deve ser a solução ótima e o espaço de busca é vasto. Mas, se existe uma candidata à solução do problema, é possível testá-la e definir o quão boa ela é. Isto é verdade para muitos problemas de Otimização Combinatória, o que leva uma metaheurística a ser bastante utilizada para resolver problemas da área.
+
+
+\section{Algoritmo Genético}
+	Aqui exibido as principais partes do Algoritmo Genético implementado para este problema.
+	
+	\subsection{Estrutura de Dados} \label{sec:ed}
+		\begin{minted}
+		[
+		frame=lines,
+		framesep=2mm,
+		tabsize=3,
+		breaklines=true,
+		baselinestretch=1.2,
+		linenos,
+		fontsize=\footnotesize
+		]{c}
+typedef struct Struct_Individuo {
+	int * tarefas;
+	double avaliacao;
+} Individuo;
+	
+		\end{minted}
+
+		\textit{tarefas} é um vetor de tamanho \textit{tarefas} em que cada posição armazena o agente responsável pela tarefa. \textit{avaliacao} é o valor de custo desta solução.
+		
+		A estrutura é nomeada \textit{Individuo} pelo fato do algoritmo forma populações de indivíduos sendo estes, possíveis soluções.
+		
+	\subsection{Execução}
+		É instanciadas duas populações. Uma atual contendo os indivíduos da população atual e outra que será utilizada como \textit{buffer} para armazenamento das operações realizadas ao longo do algoritmo.
+		Assim, os novos filhos gerados e mutados serão postos na segunda população sendo esta completada com indivíduos da primeira de forma aleatória. 
+		
+		Ao final desta iteração, a segunda população passará a ser a população atual e a primeira servirá de \textit{buffer} para a próxima geração. 
+		
+		Isso foi desenvolvido para evitar chamadas de sistema para alocação e liberação de memória.
+		
+		Abaixo serão descrito alguns procedimentos fundamentais.
+		
+		\subsubsection{Função de Avaliação} \label{sec:avaliacao}
+			\begin{minted}
+			[
+			frame=lines,
+			framesep=2mm,
+			tabsize=3,
+			breaklines=true,
+			baselinestretch=1.2,
+			linenos,
+			fontsize=\footnotesize
+			]{c}
+
+
+double Avalia_Individuo(int * tarefas) {
+	int i, j, capacidade = 0;
+	double custo = 0;
+	char solucao_invalida = 0;
+
+	for (i = 0; i < QUANT_AGENTES; i++) {
+		capacidade = 0;
+	
+		for (j = 0; j < QUANT_TAREFAS; j++) {
+			if (tarefas[j] == i) {
+				custo += CUSTO_A_T[i][j];
+				capacidade += RECURSOS_A_T[i][j];
+			}
+		}
+	
+		if (capacidade > CAPAC_AGENTES[i]) 
+			solucao_invalida = 1;
+	}
+
+	if (solucao_invalida)
+		return custo * 10000;
+	else
+		return custo;
+}
+			\end{minted}
+			
+			Calcula-se o valor de custo da solução. Caso a solução for infactível, o custo é multiplicado por uma constante que aumenta significamente seu valor, distanciando-se de qualquer valor de custo factível.
+
+		\subsubsection{Geração de Novos Filhos}
+		
+			A geração de filhos é dividida em duas partes sendo a primeira a geração de filhos e a segunda, sua mutação.
+		
+			A primeira é justamente o processo de escolher dois indivíduos da população por meio de torneios e realizar o cruzamento entre eles por meio de cruzamento uniforme. Este novo indivíduo é adicionado à segunda população já formando a nova geração de descendentes.
+		
+			Gerado os novos filhos, realiza-se o processo de mutação destes. Realiza-se a mutação aleatória \textit{Creep Mutation} em filhos aleatórios.
+		
+			Ao final, a população é preenchida com indivíduos aleatórios da população anterior.
+			
+		
+		\subsection{Arquivos de Configuração de Execução}
+			O arquivo de configuração deste algoritmo é composto dos seguintes itens:
+			
+			\begin{enumerate}
+				\item \textbf{Quantidade de Indivíduos na População:} Quantidade de possíveis soluções que representarão uma População no algoritmo; e
+				
+				\item \textbf{Valor da Taxa de Geração de Novos Filhos em Relação à População:} Valor real representando qual a porcentagem de filhos a serem gerados em relação ao tamanho da população; e
+				
+				\item \textbf{Valor da Taxa de Mutação em Relação ao Tamanho da Solução a ser Mutada:} Valor real que representa qual a porcentagem de mutação que determinado filho receberá ao compor à nova População.
+				
+				\item \textbf{Tempo em Segundos}.
+			\end{enumerate}
+			
+			Um exemplo é exibido a seguir:
+			
+			\begin{verbatim}
+			100
+			0.15
+			0.02
+			60
+			\end{verbatim}
+		
+	\section{Algoritmo de Recozimento Simulado}
+		Aqui exibido o Algoritmo de Recozimento Simulado implementado para este problema.
+		
+		\subsection{Referência do Algoritmo Implementado}
+		
+			O algoritmo implementado foi baseado no livro do \todo{Lopes}, disponibilizado gratuitamente ao público pela editora Omnipax.
+	
+		\subsection{Estrutura de Dados}
+		\begin{minted}
+		[
+		frame=lines,
+		framesep=2mm,
+		tabsize=3,
+		breaklines=true,
+		baselinestretch=1.2,
+		linenos,
+		fontsize=\footnotesize
+		]{c}
+
+typedef struct Struct_Individuo {
+	int * tarefas;
+	double avaliacao;
+} Solucao;
+		
+		\end{minted}
+		
+			A estrutura de dados utilizada segue o mesmo padrão da estrutura utilizada no Algoritmo Genético, vide Seção \ref{sec:ed}.
+		
+		\subsubsection{Procedimento que Instancia Variáveis do Algoritmo}
+			Com o pretexto de reduzir o número de chamadas de sistema para alocação e liberação de memória, utilizou-se de três variáveis \textit{Solucao} para que o algoritmo pudesse realizar seu processamento.
+			
+			As variáveis utilizadas são \textit{melhor\_s}, \textit{atual\_s} e \textit{possivel\_s}. Como o nome ja diz, a \textit{melhor\_s} armazena a melhor solução encontrada em todos os tempos, a \textit{atual\_s} é a solução que está sendo comparada com a \textit{proxima\_s}, no qual é uma solução vizinha.
+		
+		\subsection{Geração de Soluções Pré-Processamento}
+		
+		Para tornar o processamento ainda mais heurístico, determinou-se que a solução $s_0$ fosse gerada também aleatoriamente.
+		
+		\begin{minted}
+		[
+		frame=lines,
+		framesep=2mm,
+		tabsize=3,
+		breaklines=true,
+		baselinestretch=1.2,
+		linenos,
+		fontsize=\footnotesize
+		]{c}
+		
+Solucao * Instancia_Solucao_Aleatoria() {
+	int i;
+	Solucao * s;
+
+	s = calloc(1, sizeof(Solucao));
+
+	s->tarefas = calloc(QUANT_TAREFAS, sizeof(int));
+
+	for (i = 0; i < QUANT_TAREFAS; i++)
+		s->tarefas[i] = rand() % QUANT_AGENTES;
+
+	s->avaliacao = Avalia_Solucao(s->tarefas);
+
+	return s;
+}
+		\end{minted}
+		
+		funcao avaliacao A class of greedy algorithms for the generalized assignment problem
+
+		
+		\subsubsection{Execução}
+		
+		\subsubsection{Avalia Solução}
+		Método idêntico ao utilizado no algoritmo anterior, vide Seção \ref{sec:avaliacao}.
+		
+		\subsubsection{Gerando Novo Vizinho}
+		
+			Para a geração de novos vizinhos, utilizou-se da técnica de geração \textit{shift} para obter soluções ainda não avaliadas, abrangendo ainda mais o espaço de soluções. A técnica é exibida a seguir.
+		
+			\begin{minted}
+			[
+			frame=lines,
+			framesep=2mm,
+			tabsize=3,
+			breaklines=true,
+			baselinestretch=1.2,
+			linenos,
+			fontsize=\footnotesize
+			]{c}
+
+void Gera_Vizinho(Solucao * atual, Solucao ** proxima) {
+	int i, agente_atual, tarefa_escolhida1, tarefa_escolhida2, quant_alteracoes;
+	
+	for (i = 0; i < QUANT_TAREFAS; i++) {
+		(*proxima)->tarefas[i] = atual->tarefas[i];
+	}
+	
+	quant_alteracoes = rand() % (QUANT_TAREFAS / 50);
+	
+	for (i = 0; i < quant_alteracoes; i++) {
+		if (random() % 2) {
+			tarefa_escolhida1 = random() % QUANT_TAREFAS;
+		
+			agente_atual = (*proxima)->tarefas[tarefa_escolhida1]; 
+		
+			do {
+				(*proxima)->tarefas[tarefa_escolhida1] = random() % QUANT_AGENTES;
+			} while ((*proxima)->tarefas[tarefa_escolhida1] == agente_atual);
+		} else {
+		
+			do {
+				tarefa_escolhida1 = random() % QUANT_TAREFAS;
+				tarefa_escolhida2 = random() % QUANT_TAREFAS;
+			} while (tarefa_escolhida1 == tarefa_escolhida2 || (*proxima)->tarefas[tarefa_escolhida1] == (*proxima)->tarefas[tarefa_escolhida2]);
+		
+			agente_atual = (*proxima)->tarefas[tarefa_escolhida1]; 
+			(*proxima)->tarefas[tarefa_escolhida1] = (*proxima)->tarefas[tarefa_escolhida2];
+			(*proxima)->tarefas[tarefa_escolhida2] = agente_atual;
+		}
+	}
+	
+	(*proxima)->avaliacao = Avalia_Solucao((*proxima)->tarefas);
+}
+			\end{minted}
+			
+			\subsubsection{Atualização de Temperatura}
+			
+			Utilizou-se de um método geométrico para a atualização da temperatura na execução do algoritmo. Assim, a tem\todo{tempo}.
+			
+			\begin{minted}
+			[
+			frame=lines,
+			framesep=2mm,
+			tabsize=3,
+			breaklines=true,
+			baselinestretch=1.2,
+			linenos,
+			fontsize=\footnotesize
+			]{c}
+
+void Atualiza_Temperatura(double * t) {
+	*t = 0.95 * *t;
+}
+			\end{minted}
+
+
+	\subsection{Arquivos de Configuração de Execução}
+	O arquivo de configuração deste algoritmo é composto dos seguintes itens:
+	
+	\begin{enumerate}
+		\item \textbf{Valor Inteiro da Temperatura Inicial:} Configuração do valor inicial da temperatura ao iniciar o processamento do problema; e
+		
+		\item \textbf{Quantidade de Iterações:} Número de iterações de busca realizados em cada alteração da temperatura.
+	\end{enumerate}
+	
+	Um exemplo é exibido a seguir:
+	
+	\begin{verbatim}
+	120
+	25000
+	\end{verbatim}
+	
+
+\section{Entrada de Argumentos por Linha de Comando}
+	
+	Como argumentos de entrada para a execução do programa, definiu-se os seguintes parâmetros:
+	
+	\begin{enumerate}
+		\item Nome do Programa;
+		\item Arquivo de Configuração do Algoritmo;
+		\item Aquivo com a instância;
+		\item \textit{Seed} para o gerador aleatório e reprodução de experimentos.
+	\end{enumerate}
+
+\section{Experimentação} \label{sec:exec}
+	Para a coleta de resultados, cada algoritmo será executado no mesmo intervalo de tempo e seu resultado será comparado com os demais incluindo os valores de ótimo.
+
+	\subsection{Instâncias}
+		As instâncias disponibilizadas para testes são descritas na Tabela \ref{tab:inst}.
+
+		\begin{table}[H]
+			\centering
+			\caption{Tabela com as informações das Instâncias.} \label{tab:inst}
+			\begin{tabular}{cc|cc}
+				\hline
+				\textbf{Tipo} & \textbf{Nome do Arquivo} & \textbf{Quantidade de Agentes} & \textbf{Quantidade de Tarefas} \\ \hline \hline
+				A & \textit{a05100} & 5   & 100 \\
+				A & \textit{a05200} & 5   & 200 \\
+				A & \textit{a10100} & 10  & 100 \\
+				A & \textit{a10200} & 10  & 200 \\
+				A & \textit{a20100} & 20  & 100 \\
+				A & \textit{a20200} & 20  & 200 \\ \hline
+			\end{tabular}
+		\end{table}
+
+
+	\subsection{Ambiente de \textit{Hardware} e \textit{Software} Utilizado para Compilação}
+
+	A descrição do ambiente de testes é descrito na Tabela \ref{tab:arq}.
+
+	\begin{table}[H]
+		\caption{Tabela com as informações de ambiente de execução do trabalho realizado.}
+		\centering \label{tab:arq}
+		\begin{tabular}{l|l}
+			\hline
+			\textbf{Item}                & \textbf{Descrição} \\ \hline \hline
+			Processador         & 1 Processador Intel Core i7 - 2,9 GHz         \\
+			Núcleos             & 4 Núcleos \\
+			Cache L2 (por Núcleo) & 256 KB \\
+			Cache L3            & 4 MB \\
+			Memória RAM         & 10 GB DDR3        \\
+			Arquitetura         & Arquitetura de von Neumann         \\
+			Sistema Operacional & OS X 10.11.4 (15E65)         \\
+			Versão do Kernel    & Darwin 15.4.0 \\
+			Compilador          & Apple LLVM version 7.3.0 (clang-703.0.31)         \\\hline
+		\end{tabular}
+	\end{table}
+
+	\subsection{Análise Estática e Dinâmica de Código}
+		Nesta seção, será descrito os detalhes dos procedimentos de análise de código.
+
+	\subsubsection{\textit{Clang Static Analyser}}
+
+		A execução da análise estática de código foi realizada com sucesso eliminando todos os erros e avisos. Abaixo é exibido o \textit{log} de algoritmo implementado.
+
+		Relatório do \textit{backtracking} \todo{Fazer}:
+{\scriptsize
+\begin{verbatim}
+Marooned:bin pripyat$ ./scan-build n-queens-prize-backtracking.c
+scan-build: Using '/Users/pripyat/Downloads/checker-278/bin/clang' for static analysis
+Can't exec "n-queens-prize-backtracking.c": No such file or directory at ./scan-build line 1094.
+scan-build: Removing directory '/var/folders/mc/3p0xb099489gmjk9pfzgs5_m0000gn/T/scan-build-2016
+-06-09-001400-61577-1' because it contains no reports.
+scan-build: No bugs found.
+Marooned:bin pripyat$
+\end{verbatim}
+}
+
+	\subsubsection{\textit{Valgrind}}
+		A execução do detector de erros de memória \textit{Valgrind} não foi realizada pelo motivo do detector não executar sua verificação de forma correta no programa implementado. Isso ocorre pelo fato do \textit{Valgrind} não conseguir ultrapassar determinado parte do código afirmando que o \textit{software} finalizou forçadamente sendo que este erro é causado pelo próprio \textit{Valgrind}. \todo{Fazer}
+
+		Deixando um pouco mais claro, o procedimento \verb|n_Rainhas_Prize()| possui um teste verificando se a fila de rainhas no qual o algoritmo trabalha está vazia. Quando a fila está vazia nesta parte do procedimento significa que houve algum \textit{erro de processamento} e assim, o programa é finalizado sem gerar resultados. Este teste foi posto simplesmente por precausão evitando resultados errôneos, pois esta fila nunca estará vazia neste pedaço do código.
+		O único pedaço que ela ficará totalmente vazia é quando o algoritmo encontra uma solução válida e realiza os cálculos verificando se é a melhor encontrada até então. Feito os cálculos, a última rainha operada é reinserida na fila tornando-a \textit{não vazia antes da continuação do algoritmo}. Entretanto, o \textit{Valgrind} executa tal pedaço forçando a fila estar vazia ocasionando o fim do programa.
+
+		Assim, tentou-se analisar as mensagens de erro do \textit{Valgrind}, mas seus \textit{reports} mostravam avisos onde não havia nenhum erro. Como o detector não foi executado corretamente, não foi possível detectar outros possíveis vazamentos de memória. Entretanto, isso possibilitou que o código fosse revisado várias vezes a fim de aprimorá-lo.
+
+\section{Resultados}
+	Como já mencionado na Seção \ref{sec:exec}, serão executados três algoritmos e comparados de acordo com cada prêmio encontrado em um intervalo de tempo. Cada algoritmo executará $ 12 $ vezes no intervalo de tempo de 1 minuto alterando os valores de \textit{seed}.
+
+	O resultado de cada operação é exibido pela Tabela \ref{tab:resulAll} na Seção \ref{sec:anexo}. Para melhor visualização dos  dados, a Tabela \ref{tab:resul} mostra os valores médios de cada instância.
+
+		\begin{table}[H]
+			\centering
+			\caption{Tabela com as médias e desvios padrões dos prêmios das respectivas execuções.} \label{tab:resul}
+			{ \scriptsize
+
+				\begin{tabular}{c||r@{.}lr@{.}l|r@{.}lr@{.}l|r@{.}lr@{.}l||c}
+					\hline
+					\textbf{Arquivo}    & $ \bar{x} $ & \textit{\textbf{BT}}   & $\sigma$ &                & $ \bar{x} $ & \textbf{\textit{B\&B} 1}      & $\sigma$  &                 & $ \bar{x} $ & \textbf{\textit{B\&B} 2}  & $\sigma$  &              & \textbf{Ótimo} \\ \hline
+					nqp005.txt & 167         & 0             &  0       & 0              & 167         & 0                    &  0        & 0               & 167  & 0                       &  0        & 0            & 167          \\
+					nqp008.txt & 298         & 0             &  0       & 0              & 298         & 0                    &  0        & 0               & 298  & 0                       &  0        & 0            & 298          \\
+				\end{tabular}
+			}
+		\end{table}
+
+		Os símbolos $ \bar{x} $ e $ \sigma $ representam a média e o desvio padrão de cada algoritmo respectivamente.
+
+
+	\subsection{Resultados em Gráficos}
+
+	A Figura \ref{fig:200-2} exibe somente os maiores valores médios obtidos na instância nqp200.txt, para uma fácil visualização dos melhores valores obtidos.
+
+	\begin{figure}[H]
+		\centering
+		%\includegraphics[width=0.9\linewidth]{img/200-2}
+		\caption{BoxPlot da Instância nqp200.txt.}
+		\label{fig:200-2}
+	\end{figure}
+
+
+\section{Comentários Finais}\label{sec:figs}
+	Os algoritmos implementados possuem uma técnica de \textit{análise de soluções parciais} visando a comparação dos \textit{melhores valores} com os \textit{valores atuais} obtidos, cortando ramos que aparentam não ser uma boa estratégia percorrê-los.
+
+%\include{codigos}
+
+\bibliographystyle{sbc}
+\bibliography{sbc-template}
+
+\newpage
+\section{Anexos} \label{sec:anexo}
+
+{ \scriptsize
+	\begin{longtable}{c|c|cccc}
+		\caption{Tabela com todos os valores obtidos.} \label{tab:resulAll} \\
+
+		\hline
+		Arquivo  & \textit{Seed} & Prêmio \textit{BT} & Prêmio \textit{B\&B} 1 & Prêmio \textit{B\&B} 2 & Ótimo \\ \hline
+		nqp100.txt    &   0       &   2924   &   3071   &   3083   & Desconhecido \\
+		\caption[]{(continuação)}\\
+		nqp100.txt    &   1234    &   2951   &   2939   &   3033   & Desconhecido \\
+		nqp100.txt    &   2468    &   0      &   0      &   0      & Desconhecido \\
+		nqp100.txt    &   3702    &   2652   &   2878   &   2862   & Desconhecido \\ Desconhecido \\
+		nqp200.txt    &   12340   &   0      &   0      &   0      & Desconhecido \\
+		nqp200.txt    &   13574   &   5289   &   5289   &   5289   & Desconhecido \\ \hline
+
+	\end{longtable}
+}
+
+\end{document}

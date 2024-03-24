@@ -1,0 +1,57 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+GeraDados \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} \PYGdefault{k+kr}{function}\PYGdefault{p}{(}diretorio\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+  arq\PYGdefaultZus{}gen \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} read.table\PYGdefault{p}{(}diretorio\PYGdefault{p}{)}
+  vet\PYGdefaultZus{}gen \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} \PYGdefault{k+kp}{rep}\PYGdefault{p}{(}arq\PYGdefaultZus{}gen\PYGdefault{o}{\PYGdefaultZdl{}}V1\PYGdefault{p}{);}
+
+  desloca \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} \PYGdefault{l+m}{1}\PYGdefault{p}{;}
+  \PYGdefault{k+kp}{cat}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}\PYGdefaultZbs{}tMin. 1st Qu.  Median    Mean 3rd Qu.    Max.\PYGdefaultZbs{}n\PYGdefaultZdq{}}\PYGdefault{p}{)}
+
+
+
+  otimo \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} \PYGdefault{k+kt}{c}\PYGdefault{p}{(}\PYGdefault{l+m}{1698}   \PYGdefault{p}{,}
+             \PYGdefault{l+m}{1360}   \PYGdefault{p}{,}
+             \PYGdefault{l+m}{1158}   \PYGdefault{p}{,}
+             \PYGdefault{l+m}{3235}   \PYGdefault{p}{,}
+             \PYGdefault{l+m}{2623}   \PYGdefault{p}{,}
+             \PYGdefault{l+m}{2339}   \PYGdefault{p}{,}
+             \PYGdefault{l+m}{1931}  \PYGdefault{p}{,}
+             \PYGdefault{l+m}{1402}  \PYGdefault{p}{,}
+             \PYGdefault{l+m}{1243}  \PYGdefault{p}{,}
+             \PYGdefault{l+m}{3456}  \PYGdefault{p}{,}
+             \PYGdefault{l+m}{2806}  \PYGdefault{p}{,}
+             \PYGdefault{l+m}{2391}  \PYGdefault{p}{,}
+             \PYGdefault{l+m}{12673}\PYGdefault{p}{,}
+             \PYGdefault{l+m}{11568}\PYGdefault{p}{,}
+             \PYGdefault{l+m}{8431} \PYGdefault{p}{,}
+             \PYGdefault{l+m}{24927}\PYGdefault{p}{,}
+             \PYGdefault{l+m}{23302}\PYGdefault{p}{,}
+             \PYGdefault{l+m}{22377}\PYGdefault{p}{)}
+
+  \PYGdefault{c+c1}{\PYGdefaultZsh{} 3 * 6 arquivos (a, c, d)}
+  \PYGdefault{k+kr}{for} \PYGdefault{p}{(}j \PYGdefault{k+kr}{in} \PYGdefault{l+m}{1}\PYGdefault{o}{:}\PYGdefault{l+m}{18}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+    \PYGdefault{k+kp}{cat}\PYGdefault{p}{(}j\PYGdefault{p}{,} \PYGdefault{l+s}{\PYGdefaultZdq{}\PYGdefaultZbs{}t\PYGdefaultZdq{}}\PYGdefault{p}{);}
+    vetor\PYGdefaultZus{}buffer \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} vet\PYGdefaultZus{}gen\PYGdefault{p}{[}desloca\PYGdefault{o}{:}\PYGdefault{p}{(}desloca \PYGdefault{o}{+} \PYGdefault{l+m}{9}\PYGdefault{p}{)];}
+    \PYGdefault{k+kp}{cat}\PYGdefault{p}{(}\PYGdefault{k+kp}{summary}\PYGdefault{p}{(}vetor\PYGdefaultZus{}buffer\PYGdefault{p}{),} \PYGdefault{l+s}{\PYGdefaultZdq{}\PYGdefaultZbs{}t\PYGdefaultZbs{}t\PYGdefaultZdq{}}\PYGdefault{p}{)}
+
+    \PYGdefault{k+kp}{cat}\PYGdefault{p}{(}sd\PYGdefault{p}{(}vetor\PYGdefaultZus{}buffer\PYGdefault{p}{))}
+    \PYGdefault{k+kp}{cat}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}\PYGdefaultZbs{}n\PYGdefaultZdq{}}\PYGdefault{p}{)}
+
+    desloca \PYGdefault{o}{=} desloca \PYGdefault{o}{+} \PYGdefault{l+m}{10}\PYGdefault{p}{;}
+  \PYGdefault{p}{\PYGdefaultZcb{}}
+  desloca \PYGdefault{o}{=} \PYGdefault{l+m}{1}\PYGdefault{p}{;}
+  \PYGdefault{k+kr}{for} \PYGdefault{p}{(}j \PYGdefault{k+kr}{in} \PYGdefault{l+m}{1}\PYGdefault{o}{:}\PYGdefault{l+m}{18}\PYGdefault{p}{)} \PYGdefault{p}{\PYGdefaultZob{}}
+    \PYGdefault{c+c1}{\PYGdefaultZsh{}cat(j, \PYGdefaultZdq{}\PYGdefaultZbs{}t\PYGdefaultZdq{});}
+    vetor\PYGdefaultZus{}buffer \PYGdefault{o}{\PYGdefaultZlt{}\PYGdefaultZhy{}} vet\PYGdefaultZus{}gen\PYGdefault{p}{[}desloca\PYGdefault{o}{:}\PYGdefault{p}{(}desloca \PYGdefault{o}{+} \PYGdefault{l+m}{9}\PYGdefault{p}{)];}
+    \PYGdefault{k+kp}{cat}\PYGdefault{p}{(}\PYGdefault{l+m}{100} \PYGdefault{o}{*} \PYGdefault{p}{(}otimo\PYGdefault{p}{[}j\PYGdefault{p}{]} \PYGdefault{o}{/} \PYGdefault{k+kp}{min}\PYGdefault{p}{(}vetor\PYGdefaultZus{}buffer\PYGdefault{p}{)))}
+    \PYGdefault{k+kp}{cat}\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}\PYGdefaultZbs{}n\PYGdefaultZdq{}}\PYGdefault{p}{)}
+
+    desloca \PYGdefault{o}{=} desloca \PYGdefault{o}{+} \PYGdefault{l+m}{10}\PYGdefault{p}{;}
+  \PYGdefault{p}{\PYGdefaultZcb{}}
+
+\PYGdefault{p}{\PYGdefaultZcb{}}
+
+GeraDados\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}out\PYGdefaultZus{}genetico.txt\PYGdefaultZdq{}}\PYGdefault{p}{)}
+GeraDados\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}out\PYGdefaultZus{}simulated\PYGdefaultZus{}annealing.txt\PYGdefaultZdq{}}\PYGdefault{p}{)}
+GeraDados\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}out\PYGdefaultZus{}reinicio.txt\PYGdefaultZdq{}}\PYGdefault{p}{)}
+GeraDados\PYGdefault{p}{(}\PYGdefault{l+s}{\PYGdefaultZdq{}out\PYGdefaultZus{}grasp.txt\PYGdefaultZdq{}}\PYGdefault{p}{)}
+\end{Verbatim}

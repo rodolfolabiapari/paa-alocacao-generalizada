@@ -1,0 +1,8 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYGdefault{k}{typedef} \PYGdefault{k}{struct} \PYGdefault{n}{Struct\PYGdefaultZus{}Solucao} \PYGdefault{p}{\PYGdefaultZob{}}
+	\PYGdefault{k+kt}{int} \PYGdefault{o}{*} \PYGdefault{n}{excesso}\PYGdefault{p}{;}
+	\PYGdefault{k+kt}{int} \PYGdefault{o}{*} \PYGdefault{n}{tarefas}\PYGdefault{p}{;}
+	\PYGdefault{k+kt}{double} \PYGdefault{n}{avaliacao}\PYGdefault{p}{;}
+	\PYGdefault{k+kt}{double} \PYGdefault{n}{custo}\PYGdefault{p}{;}
+\PYGdefault{p}{\PYGdefaultZcb{}} \PYGdefault{n}{Solucao}\PYGdefault{p}{;}
+\end{Verbatim}
